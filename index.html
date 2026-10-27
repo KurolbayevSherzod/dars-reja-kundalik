@@ -1,0 +1,1928 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="theme-color" content="#1d4ed8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Dars Reja">
+    <title>Omon School — IT va AI Dars Reja & Kundalik</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --brand-color: #1d4ed8;
+            color-scheme: light;
+        }
+
+        body {
+            accent-color: var(--brand-color);
+            min-height: 100dvh;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .fluid-title {
+            font-size: clamp(1.25rem, 0.95rem + 1.5vw, 1.875rem);
+            line-height: 1.25;
+        }
+
+        .fluid-stat {
+            font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2.25rem);
+            line-height: 1.15;
+        }
+
+        /* Container queries for responsive topic cards */
+        .topics-container {
+            container-type: inline-size;
+        }
+
+        @container (min-width: 640px) {
+            .topic-card-inner {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+        }
+
+        /* Modal dialog scroll containment & backdrop rules */
+        dialog:modal {
+            overscroll-behavior: contain;
+            max-height: 90dvh;
+            width: min(92vw, 36rem);
+            border: none;
+            border-radius: 1.25rem;
+            padding: 0;
+            box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+        }
+
+        dialog::backdrop {
+            overflow: hidden;
+            overscroll-behavior: contain;
+            background-color: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(3px);
+        }
+
+        /* Fallback for older browsers without accent-color */
+        @supports not (accent-color: var(--brand-color)) {
+            input[type="checkbox"].visually-hidden {
+                position: absolute !important;
+                clip-path: inset(50%) !important;
+                overflow: hidden !important;
+                width: 1px !important;
+                height: 1px !important;
+                margin: -1px !important;
+                padding: 0 !important;
+                border: 0 !important;
+                white-space: nowrap !important;
+            }
+
+            label.fallback-check-label {
+                position: relative;
+                padding-left: 2.25rem;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+            }
+
+            input[type="checkbox"] + span.topic-label-text::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 1.35rem;
+                height: 1.35rem;
+                border: 2px solid #cbd5e1;
+                background: white;
+                border-radius: 6px;
+                box-sizing: border-box;
+                transition: all 0.2s ease;
+            }
+
+            input[type="checkbox"]:focus-visible + span.topic-label-text::before {
+                outline: 2px solid #1d4ed8;
+                outline-offset: 2px;
+            }
+
+            input[type="checkbox"]:checked + span.topic-label-text::before {
+                background-color: var(--brand-color, #1d4ed8);
+                border-color: var(--brand-color, #1d4ed8);
+            }
+
+            input[type="checkbox"]:checked + span.topic-label-text::after {
+                content: "✓";
+                position: absolute;
+                left: 0.3rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: white;
+                font-weight: bold;
+                font-size: 0.9rem;
+            }
+
+            progress {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                border: none;
+                background: #e2e8f0;
+                height: 10px;
+                border-radius: 9999px;
+            }
+
+            progress::-webkit-progress-bar {
+                background-color: #e2e8f0;
+                border-radius: 9999px;
+            }
+
+            progress::-webkit-progress-value {
+                background-color: var(--brand-color, #1d4ed8);
+                border-radius: 9999px;
+            }
+
+            progress::-moz-progress-bar {
+                background-color: var(--brand-color, #1d4ed8);
+                border-radius: 9999px;
+            }
+        }
+
+        /* Smooth horizontal scrollbar hiding for month tabs */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                padding: 0 !important;
+            }
+            .print-container {
+                box-shadow: none !important;
+                max-width: 100% !important;
+                padding: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body class="p-3 sm:p-5 md:p-8 pb-24 md:pb-12">
+    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 print-container border border-slate-200/80">
+        
+        <!-- Header -->
+        <header class="border-b border-slate-200 pb-4 mb-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <div class="flex items-center gap-2.5">
+                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-blue-700 text-white font-bold text-lg shadow-sm shrink-0">OS</span>
+                    <div>
+                        <h1 class="fluid-title font-extrabold text-blue-800 tracking-tight">Omon School Gurlan filiali</h1>
+                        <p class="text-xs sm:text-sm text-slate-500 font-medium">IT va AI darslari kalendar-mavzu nazorati va kundaligi (Sentyabr – Iyun)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Action Toolbar -->
+            <div class="flex flex-wrap items-center gap-2 no-print">
+                <button type="button" onclick="openSyncDialog()" id="syncStatusBtn" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-xl border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition shadow-sm">
+                    <span id="syncStatusIcon">☁️</span>
+                    <span id="syncStatusText">Sinxronlash</span>
+                </button>
+                <button type="button" onclick="openOverviewDialog()" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 transition shadow-sm">
+                    📊 Umumiy hisobot
+                </button>
+                <button type="button" onclick="copyTelegramReport()" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition shadow-sm" title="Telegram uchun hisobot nusxalash">
+                    📋 Hisobot
+                </button>
+                <button type="button" id="installPwaBtn" onclick="installPWA()" class="hidden items-center gap-1.5 text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-sm">
+                    📲 O'rnatish
+                </button>
+            </div>
+        </header>
+
+        <!-- Class & Group Selectors -->
+        <section aria-label="Sinf va guruh tanlash" class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-5">
+            <div class="md:col-span-7">
+                <label for="classSelect" class="block text-xs sm:text-sm font-bold mb-1.5 text-slate-700">📚 Sinf / Yo'nalishni tanlang:</label>
+                <select id="classSelect" class="w-full border-2 border-slate-200 rounded-xl p-3 bg-slate-50 font-semibold text-slate-800 focus:border-blue-600 focus:bg-white outline-none transition text-sm sm:text-base" onchange="onFilterChange()">
+                    <optgroup label="💻 IT Yo'nalishi (1–11 Sinflar)">
+                        <option value="it_1">1-Sinflar (IT — Kompyuter savodxonligi)</option>
+                        <option value="it_2">2-Sinflar (IT — Tizim, Matn va Fayllar)</option>
+                        <option value="it_5">5-Sinflar (IT — MS Office & Google xizmatlari)</option>
+                        <option value="it_6">6- va undan yuqori sinflar (IT — Pro Office, Prezi, PDF)</option>
+                    </optgroup>
+                    <optgroup label="🤖 Sun'iy Intellekt (AI) Yo'nalishi">
+                        <option value="ai_5">5-Sinflar (AI — Sun'iy intellekt asoslari)</option>
+                        <option value="ai_6_7">6–7 Sinflar (Amaliy AI — Prompt, Dizayn, Musiqa, Kod)</option>
+                        <option value="ai_huquq_med">8–11 Sinflar: Huquq, Tillar va Tibbiyot (AI Fakultet)</option>
+                        <option value="ai_business">8–11 Sinflar: Biznes va Startap (AI Loyiha)</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="md:col-span-5">
+                <div class="flex items-center justify-between mb-1.5">
+                    <label for="groupSelect" class="block text-xs sm:text-sm font-bold text-slate-700">👥 Guruh / Sinf harfi:</label>
+                    <button type="button" onclick="openGroupDialog()" class="text-xs font-bold text-blue-600 hover:text-blue-800 no-print">+ Guruh qo'shish</button>
+                </div>
+                <select id="groupSelect" class="w-full border-2 border-slate-200 rounded-xl p-3 bg-slate-50 font-semibold text-slate-800 focus:border-blue-600 focus:bg-white outline-none transition text-sm sm:text-base" onchange="onFilterChange()">
+                    <!-- Dynamically populated with default + custom groups -->
+                </select>
+            </div>
+        </section>
+
+        <!-- Progress & Next Topic Dashboard -->
+        <section aria-label="O'zlashtirish ko'rsatkichi" class="bg-gradient-to-br from-blue-50 via-indigo-50/70 to-slate-50 border border-blue-200/80 rounded-2xl p-4 sm:p-5 mb-5 shadow-sm">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div class="flex-1">
+                    <div class="flex flex-wrap items-center gap-2 mb-1">
+                        <span class="text-xs uppercase tracking-wider text-blue-700 font-bold">O'zlashtirish ko'rsatkichi</span>
+                        <span id="percentBadge" class="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-blue-700 text-white">0%</span>
+                        <span id="lastUpdatedBadge" class="text-xs text-slate-500 font-medium hidden"></span>
+                    </div>
+                    <div class="flex items-baseline gap-3">
+                        <h2 id="progressText" class="fluid-stat font-extrabold text-blue-950">0 / 40</h2>
+                        <span id="remainingText" class="text-xs sm:text-sm font-semibold text-slate-600">40 ta mavzu qoldi</span>
+                    </div>
+                    <div class="mt-3 w-full">
+                        <progress id="progressBar" value="0" max="40" class="w-full h-3 rounded-full overflow-hidden">0%</progress>
+                    </div>
+                </div>
+
+                <!-- Next Topic Quick Card -->
+                <div id="nextTopicBox" class="lg:w-96 bg-white/90 border border-blue-200 rounded-xl p-3.5 shadow-sm flex flex-col justify-between gap-2.5">
+                    <div>
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md">🎯 Navbatdagi dars</span>
+                            <span id="nextTopicMonth" class="text-[11px] font-bold text-slate-500">1-Oy: Sentabr</span>
+                        </div>
+                        <p id="nextTopicTitle" class="text-sm font-bold text-slate-800 mt-1.5 line-clamp-2">1. Kompyuter nima? — Asosiy tushunchalar</p>
+                    </div>
+                    <button type="button" id="markNextBtn" onclick="markNextTopicCompleted()" class="no-print w-full bg-blue-700 hover:bg-blue-800 active:bg-blue-900 text-white font-bold text-xs sm:text-sm py-2 px-3 rounded-lg transition shadow-sm flex items-center justify-center gap-1.5">
+                        ✅ Shu dars o'tildi deb belgilash
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search, Month Tabs, and Status Filter -->
+        <section aria-label="Qidiruv va filtrlar" class="space-y-3 mb-5 no-print">
+            <!-- Month horizontal tabs -->
+            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1" id="monthTabs" role="tablist" aria-label="Oylar bo'yicha filtr">
+                <!-- Dynamically generated -->
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+                <div class="sm:col-span-6 relative">
+                    <input type="search" id="searchInput" oninput="renderTopics()" placeholder="🔎 Mavzu nomi yoki izoh bo'yicha qidirish..." class="w-full border-2 border-slate-200 rounded-xl pl-3.5 pr-8 py-2 text-sm font-medium text-slate-800 focus:border-blue-600 outline-none transition bg-slate-50 focus:bg-white">
+                    <button type="button" id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-sm font-bold">✕</button>
+                </div>
+                <div class="sm:col-span-4 flex rounded-xl bg-slate-100 p-1 border border-slate-200">
+                    <button type="button" onclick="setStatusFilter('all')" id="filter_all" class="flex-1 text-xs font-bold py-1.5 rounded-lg bg-white text-blue-700 shadow-sm transition">Barchasi</button>
+                    <button type="button" onclick="setStatusFilter('pending')" id="filter_pending" class="flex-1 text-xs font-bold py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition">O'tilmagan</button>
+                    <button type="button" onclick="setStatusFilter('done')" id="filter_done" class="flex-1 text-xs font-bold py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition">O'tilgan</button>
+                </div>
+                <div class="sm:col-span-2 flex gap-1.5">
+                    <button type="button" onclick="exportCSV()" class="flex-1 text-xs font-bold py-2 px-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition" title="Excel (CSV) yuklab olish">
+                        📥 Excel
+                    </button>
+                    <button type="button" onclick="resetProgress()" class="flex-1 text-xs font-bold py-2 px-2.5 rounded-xl border border-red-200 bg-white text-red-600 hover:bg-red-50 transition" title="Shu guruh belgilarini tozalash">
+                        🗑️ Tozalash
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topics List -->
+        <main class="topics-container">
+            <div id="topicsList" class="space-y-2.5">
+                <!-- Dynamically rendered -->
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-8 pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-2 no-print">
+            <span>Omon School Gurlan filiali • IT & AI Kundaligi</span>
+            <div class="flex items-center gap-3">
+                <button type="button" onclick="exportBackupJSON()" class="text-slate-500 hover:text-blue-700 font-semibold underline">💾 Zaxira nusxa (JSON)</button>
+                <label class="text-slate-500 hover:text-blue-700 font-semibold underline cursor-pointer">
+                    📂 Tiklash (Import)
+                    <input type="file" accept=".json" class="hidden" onchange="importBackupJSON(event)">
+                </label>
+                <button type="button" onclick="window.print()" class="text-slate-500 hover:text-blue-700 font-semibold underline">🖨️ Chop etish</button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Sticky Mobile Bottom Bar -->
+    <div class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur border-t border-slate-200 p-2.5 px-4 flex items-center justify-between md:hidden z-30 shadow-lg no-print">
+        <div>
+            <span id="mobileBarClass" class="text-[11px] font-bold text-slate-500 block truncate max-w-[180px]">1-Sinflar (IT)</span>
+            <span id="mobileBarProgress" class="text-sm font-extrabold text-blue-900">0 / 40 (0%)</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <button type="button" onclick="markNextTopicCompleted()" class="bg-blue-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-sm active:scale-95 transition">
+                ✅ Keyingi dars
+            </button>
+            <button type="button" onclick="openSyncDialog()" class="bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold px-3 py-2 rounded-xl">
+                ☁️
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toastBox" role="status" aria-live="polite" class="fixed top-4 right-4 z-50 hidden bg-slate-900 text-white text-xs sm:text-sm font-semibold px-4 py-3 rounded-xl shadow-xl border border-slate-700 max-w-sm transition-all"></div>
+
+    <!-- DIALOG 1: Topic Note & Date Editor -->
+    <dialog id="noteDialog" closedby="any" aria-labelledby="noteDialogTitle">
+        <div class="p-5 sm:p-6">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+                <h3 id="noteDialogTitle" class="text-base sm:text-lg font-extrabold text-slate-800">📝 Dars tafsilotlari va izoh</h3>
+                <button type="button" onclick="document.getElementById('noteDialog').close()" class="text-slate-400 hover:text-slate-700 font-bold text-lg px-2">✕</button>
+            </div>
+            <form id="noteForm" onsubmit="saveTopicDetails(event)" class="space-y-4">
+                <input type="hidden" id="editTopicIndex">
+                <div>
+                    <label for="editTopicTitle" class="block text-xs font-bold text-slate-600 mb-1">Mavzu nomi (tahrirlash mumkin):</label>
+                    <input type="text" id="editTopicTitle" required class="w-full border-2 border-slate-200 rounded-xl p-2.5 text-sm font-semibold text-slate-800 focus:border-blue-600 outline-none">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label for="editTopicDate" class="block text-xs font-bold text-slate-600 mb-1">📅 Dars o'tilgan sana:</label>
+                        <input type="date" id="editTopicDate" class="w-full border-2 border-slate-200 rounded-xl p-2.5 text-sm font-semibold text-slate-800 focus:border-blue-600 outline-none">
+                    </div>
+                    <div class="flex items-end">
+                        <label class="flex items-center gap-2.5 p-2.5 border-2 border-slate-200 rounded-xl w-full cursor-pointer hover:bg-slate-50">
+                            <input type="checkbox" id="editTopicDone" class="w-5 h-5">
+                            <span class="text-sm font-bold text-slate-700">Dars o'tildi (Bajarildi)</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label for="editTopicNote" class="block text-xs font-bold text-slate-600 mb-1">📌 Izoh / Uyga vazifa / Eslatma:</label>
+                    <textarea id="editTopicNote" rows="3" placeholder="Masalan: Amaliy mashq bajarildi, uyga vazifa berildi, keyingi darsda takrorlash kerak..." class="w-full border-2 border-slate-200 rounded-xl p-2.5 text-sm font-medium text-slate-800 focus:border-blue-600 outline-none"></textarea>
+                </div>
+                <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                    <button type="button" onclick="document.getElementById('noteDialog').close()" class="px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100">Bekor qilish</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-sm font-bold bg-blue-700 text-white hover:bg-blue-800 shadow-sm">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <!-- DIALOG 2: Cloud Sync (Kompyuter <-> Telefon) -->
+    <dialog id="syncDialog" closedby="any" aria-labelledby="syncDialogTitle">
+        <div class="p-5 sm:p-6">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+                <h3 id="syncDialogTitle" class="text-base sm:text-lg font-extrabold text-slate-800">☁️ Kompyuter va Telefonni Sinxronlash</h3>
+                <button type="button" onclick="document.getElementById('syncDialog').close()" class="text-slate-400 hover:text-slate-700 font-bold text-lg px-2">✕</button>
+            </div>
+            <div class="space-y-4 text-sm text-slate-600">
+                <div class="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-xs sm:text-sm leading-relaxed">
+                    <strong>💡 Qanday ishlaydi?</strong><br>
+                    Kompyuterda va telefonda belgilangan barcha mavzular, sanalar va izohlar <strong>GitHub bulutli xotirasida</strong> avtomatik saqlanadi va ikkala qurilmada birdek ko'rinadi.
+                </div>
+
+                <div id="syncConnectedBox" class="hidden p-4 rounded-xl bg-emerald-50 border border-emerald-200 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs sm:text-sm font-extrabold text-emerald-800">✅ Bulutli sinxronlash yoqilgan!</span>
+                        <button type="button" onclick="syncNow(true)" class="text-xs font-bold bg-emerald-700 text-white px-3 py-1.5 rounded-lg hover:bg-emerald-800">🔄 Hozir yangilash</button>
+                    </div>
+                    <p class="text-xs text-emerald-700">Telefonda ham xuddi shu ma'lumotlarni bir zumda ochish va boshqarish uchun quyidagi <strong>Maxsus Sinxronlash Havolasini</strong> nusxalab Telegram'dagi <em>Saved Messages</em> ga yuboring va telefonda oching:</p>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <button type="button" onclick="copyPhoneSyncLink()" class="flex-1 bg-white border border-emerald-300 text-emerald-800 font-bold text-xs py-2.5 px-3 rounded-xl hover:bg-emerald-100 shadow-sm">
+                            📲 Telefonga ulash havolasini nusxalash
+                        </button>
+                        <button type="button" onclick="toggleQrCode()" class="bg-white border border-emerald-300 text-emerald-800 font-bold text-xs py-2.5 px-3 rounded-xl hover:bg-emerald-100 shadow-sm">
+                            📷 QR-kodni ko'rsatish
+                        </button>
+                    </div>
+                    <div id="qrCodeWrapper" class="hidden flex-col items-center justify-center p-3 bg-white rounded-xl border border-slate-200 text-center">
+                        <img id="qrCodeImg" alt="Telefonda skanerlash uchun QR kod" width="180" height="180" class="mx-auto rounded-lg" style="aspect-ratio: 1 / 1;">
+                        <span class="text-[11px] text-slate-500 mt-1.5 block">Telefon kamerasi orqali skanerlang</span>
+                    </div>
+                </div>
+
+                <form onsubmit="saveSyncSettings(event)" class="space-y-3">
+                    <div>
+                        <label for="ghRepoInput" class="block text-xs font-bold text-slate-700 mb-1">GitHub Repozitoriy (Foydalanuvchi/Repo):</label>
+                        <input type="text" id="ghRepoInput" value="KurolbayevSherzod/dars-reja-kundalik" required class="w-full border-2 border-slate-200 rounded-xl p-2.5 text-xs sm:text-sm font-semibold text-slate-800 focus:border-blue-600 outline-none">
+                    </div>
+                    <div>
+                        <label for="ghTokenInput" class="block text-xs font-bold text-slate-700 mb-1">GitHub Maxfiy Kalit (Personal Access Token):</label>
+                        <input type="password" id="ghTokenInput" placeholder="ghp_... yoki github_pat_..." class="w-full border-2 border-slate-200 rounded-xl p-2.5 text-xs sm:text-sm font-semibold text-slate-800 focus:border-blue-600 outline-none">
+                        <p class="text-[11px] text-slate-400 mt-1">Kalit faqat shu qurilma xotirasida (localStorage) xavfsiz saqlanadi.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-200">
+                        <button type="button" onclick="disconnectSync()" class="text-xs font-bold text-red-600 hover:underline">Kalitni o'chirish</button>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="document.getElementById('syncDialog').close()" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-slate-100">Yopish</button>
+                            <button type="submit" class="px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-blue-700 text-white hover:bg-blue-800 shadow-sm">Saqlash va Sinxronlash</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- DIALOG 3: Overall Progress Across All Classes & Groups -->
+    <dialog id="overviewDialog" closedby="any" aria-labelledby="overviewDialogTitle">
+        <div class="p-5 sm:p-6">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+                <h3 id="overviewDialogTitle" class="text-base sm:text-lg font-extrabold text-slate-800">📊 Barcha Sinf va Guruhlar Hisoboti</h3>
+                <button type="button" onclick="document.getElementById('overviewDialog').close()" class="text-slate-400 hover:text-slate-700 font-bold text-lg px-2">✕</button>
+            </div>
+            <div id="overviewList" class="space-y-3 max-h-[60dvh] overflow-y-auto pr-1">
+                <!-- Populated dynamically -->
+            </div>
+            <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-200">
+                <button type="button" onclick="copyFullSchoolReport()" class="text-xs sm:text-sm font-bold bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700 shadow-sm">
+                    📋 Umumiy hisobotni nusxalash
+                </button>
+                <button type="button" onclick="document.getElementById('overviewDialog').close()" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-slate-100">Yopish</button>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- DIALOG 4: Add Custom Group -->
+    <dialog id="groupDialog" closedby="any" aria-labelledby="groupDialogTitle">
+        <div class="p-5 sm:p-6">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+                <h3 id="groupDialogTitle" class="text-base sm:text-lg font-extrabold text-slate-800">👥 Yangi Guruh / Sinf qo'shish</h3>
+                <button type="button" onclick="document.getElementById('groupDialog').close()" class="text-slate-400 hover:text-slate-700 font-bold text-lg px-2">✕</button>
+            </div>
+            <form onsubmit="addCustomGroup(event)" class="space-y-4">
+                <div>
+                    <label for="newGroupName" class="block text-xs font-bold text-slate-600 mb-1">Guruh yoki sinf nomi:</label>
+                    <input type="text" id="newGroupName" required placeholder="Masalan: 3-Guruh yoki 8A-Sinf" class="w-full border-2 border-slate-200 rounded-xl p-2.5 text-sm font-semibold text-slate-800 focus:border-blue-600 outline-none">
+                </div>
+                <div class="flex items-center justify-end gap-2 pt-2">
+                    <button type="button" onclick="document.getElementById('groupDialog').close()" class="px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100">Bekor qilish</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-sm font-bold bg-blue-700 text-white hover:bg-blue-800 shadow-sm">Qo'shish</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <script>
+        // ============================================================================
+        // 1. O'QUV REJA BAZASI (Barcha 8 yo'nalish uchun to'liq 40 haftalik mavzular)
+        // ============================================================================
+        const MONTHS = [
+            { id: 0, name: "Barchasi", short: "Barchasi (40)" },
+            { id: 1, name: "1-Oy: Sentabr", short: "Sentabr" },
+            { id: 2, name: "2-Oy: Oktyabr", short: "Oktyabr" },
+            { id: 3, name: "3-Oy: Noyabr", short: "Noyabr" },
+            { id: 4, name: "4-Oy: Dekabr", short: "Dekabr" },
+            { id: 5, name: "5-Oy: Yanvar", short: "Yanvar" },
+            { id: 6, name: "6-Oy: Fevral", short: "Fevral" },
+            { id: 7, name: "7-Oy: Mart", short: "Mart" },
+            { id: 8, name: "8-Oy: Aprel", short: "Aprel" },
+            { id: 9, name: "9-Oy: May", short: "May" },
+            { id: 10, name: "10-Oy: Iyun", short: "Iyun" }
+        ];
+
+        const CLASS_NAMES = {
+            "it_1": "1-Sinflar (IT — Kompyuter savodxonligi)",
+            "it_2": "2-Sinflar (IT — Tizim, Matn va Fayllar)",
+            "it_5": "5-Sinflar (IT — MS Office & Google)",
+            "it_6": "6- va undan yuqori (IT — Pro Office, Prezi, PDF)",
+            "ai_5": "5-Sinflar (AI — Sun'iy intellekt asoslari)",
+            "ai_6_7": "6–7 Sinflar (Amaliy AI)",
+            "ai_huquq_med": "8–11 Sinflar: Huquq, Tillar va Tibbiyot (AI)",
+            "ai_business": "8–11 Sinflar: Biznes va Startap (AI Loyiha)"
+        };
+
+        const DEFAULT_GROUPS = [
+            // 1–7 Sinflar (A va B)
+            { id: "1a", name: "1-A sinf", category: "sinf", grade: [1] },
+            { id: "1b", name: "1-B sinf", category: "sinf", grade: [1] },
+            { id: "2a", name: "2-A sinf", category: "sinf", grade: [2] },
+            { id: "2b", name: "2-B sinf", category: "sinf", grade: [2] },
+            { id: "3a", name: "3-A sinf", category: "sinf", grade: [3] },
+            { id: "3b", name: "3-B sinf", category: "sinf", grade: [3] },
+            { id: "4a", name: "4-A sinf", category: "sinf", grade: [4] },
+            { id: "4b", name: "4-B sinf", category: "sinf", grade: [4] },
+            { id: "5a", name: "5-A sinf", category: "sinf", grade: [5] },
+            { id: "5b", name: "5-B sinf", category: "sinf", grade: [5] },
+            { id: "6a", name: "6-A sinf", category: "sinf", grade: [6] },
+            { id: "6b", name: "6-B sinf", category: "sinf", grade: [6] },
+            { id: "7a", name: "7-A sinf", category: "sinf", grade: [7] },
+            { id: "7b", name: "7-B sinf", category: "sinf", grade: [7] },
+            // Fakultet guruhlari
+            { id: "biznes1", name: "Biznes 1", category: "guruh", fac: "biznes" },
+            { id: "biznes2", name: "Biznes 2", category: "guruh", fac: "biznes" },
+            { id: "med1", name: "Med 1", category: "guruh", fac: "med" },
+            { id: "med2", name: "Med 2", category: "guruh", fac: "med" },
+            { id: "tillar", name: "Tillar", category: "guruh", fac: "tillar" },
+            { id: "huquq1", name: "Huquq 1", category: "guruh", fac: "huquq" },
+            { id: "huquq2", name: "Huquq 2", category: "guruh", fac: "huquq" }
+        ];
+
+        const curriculaData = {
+            "it_1": [
+                // 1-Oy: Sentabr (Kompyuter va uning qismlari)
+                "1. Kompyuter nima? — Asosiy tushunchalar",
+                "2. Asosiy qismlar: monitor, sichqoncha, klaviatura, tizim bloki",
+                "3. Qo‘shimcha qurilmalar: printer, skaner, USB, naushnik",
+                "4. Ulanishlar va qurilmalarni ehtiyot qilish qoidalari",
+                // 2-Oy: Oktyabr (Operatsion tizim va ish stoli)
+                "5. Kompyuterni yoqish/o‘chirish va ish stoli bilan tanishish",
+                "6. Dastur ochish, yopish va oynalar o‘rtasida almashish",
+                "7. Fayl menejeri: papka, fayl, saqlash va ochish",
+                "8. Tugmalar va belgilarning ma'nosi: belgi (icon), oyna, tugmalar",
+                // 3-Oy: Noyabr (Klaviatura va matn terish)
+                "9. Klaviatura joylashuvi va asosiy tugmalar",
+                "10. O‘z ismini yozish, oddiy so‘zlar terish",
+                "11. Enter, Backspace, Shift, Caps Lock vazifalari",
+                "12. Qisqa tugmalar (Ctrl + C, Ctrl + V) bilan tanishish",
+                // 4-Oy: Dekabr (Fayllar va papkalarni boshqarish)
+                "13. Fayl nima? Papka nima?",
+                "14. Fayl yaratish, nomlash va saqlash",
+                "15. Fayllarni ko‘chirish, nusxa olish va o‘chirish (Savat)",
+                "16. .docx, .jpg, .pdf kabi fayl turlari bilan tanishish",
+                // 5-Oy: Yanvar (Internetdan foydalanish)
+                "17. Brauzer va qidiruv tizimi nima? (Google, Bing)",
+                "18. Saytga kirish, havola bosish va havolani aniqlash",
+                "19. Manzillar paneli (URL) va qidiruv so‘zlari",
+                "20. Qidiruv amaliyoti: rasm, matn, video topish",
+                // 6-Oy: Fevral (Elektron pochta va muloqot)
+                "21. Email nima? Email yaratish va kirish",
+                "22. Xabar yozish, yuborish va javob yozish",
+                "23. Fayl biriktirish va yuklab olish",
+                "24. E-pochta odoblari va xavfsizlik qoidalari",
+                // 7-Oy: Mart (Internet xavfsizligi va maxfiylik)
+                "25. Kuchli parollar yaratish qoidalari",
+                "26. Soxta sayt va xavfli havolalarni aniqlash",
+                "27. Antivirus va dastur yangilanishlari",
+                "28. Onlayn shaxsiy axborotni himoya qilish",
+                // 8-Oy: Aprel (Matn, jadval va taqdimot dasturlari)
+                "29. Microsoft Word — oddiy matn yozish va formatlash",
+                "30. Microsoft Excel — ustun, satr va oddiy hisob-kitob",
+                "31. Microsoft PowerPoint — slayd yaratish va rasm joylash",
+                "32. PDF fayllar bilan ishlash",
+                // 9-Oy: May (Raqamli ijodkorlik)
+                "33. Paint yoki Tux Paint dasturida rasm chizish",
+                "34. Rasmni bo‘yash, saqlash va chop etish",
+                "35. Canva va boshqa onlayn dizayn vositalari",
+                "36. Ovoz va rasm bilan ishlash (oddiy video yaratish)",
+                // 10-Oy: Iyun (Muammolarni hal qilish va yakuniy ish)
+                "37. Ekran muzlashi yoki internet uzilishi: oddiy yechimlar",
+                "38. Disk to‘lib qolsa yoki fayl ochilmasa nima qilish kerak?",
+                "39. Amaliy mashg‘ulot: mustaqil fayl yaratish va saqlash",
+                "40. Yil yakuniy tekshiruvi — «Kompyuter savodxonligi sinovi»"
+            ],
+
+            "it_2": [
+                // 1-Oy: Sentabr (Qurilmalar va kompyuter turlari)
+                "1. Kiritish, chiqarish va saqlash qurilmalari",
+                "2. Hardware va Software (Qurilma va dastur farqi)",
+                "3. Ulanish joylari (USB, HDMI, Audio portlar) va kabellar",
+                "4. Kompyuter turlarini taqqoslash (Stol kompyuteri, noutbuk, planshet)",
+                // 2-Oy: Oktyabr (Ish stoli, oynalar va sozlamalar)
+                "5. Ish stoli (Desktop), Start menyusi va Taskbar bilan ishlash",
+                "6. Oynalarni boshqarish va ikki oynada navbat bilan ishlash",
+                "7. Oddiy sozlamalar: ovoz, ekran yorug‘ligi, til, sana va vaqt",
+                "8. «Kompyuter doktori» amaliy mashg‘uloti (Restart va xavfsiz yordam)",
+                // 3-Oy: Noyabr (Klaviatura va matn tahrirlash)
+                "9. Katta harflar (Shift, Caps Lock) va tinish belgilari",
+                "10. O‘zbek va ingliz klaviaturasi (Win + Space, raqam va belgilar)",
+                "11. Matnni tahrirlash: Backspace, Delete, Ctrl+A/C/X/V/Z/S",
+                "12. Amaliy loyiha: «Men haqimda» matnini yozish va saqlash",
+                // 4-Oy: Dekabr (Papkalar tizimi va fayllar)
+                "13. Papkalar tizimini yaratish («Mening IT ishlarim»)",
+                "14. Fayllarni to‘g‘ri nomlash va kengaytmalar (.docx, .jpg, .pptx, .pdf)",
+                "15. Fayllar bilan amallar: Copy, Move, Rename va Recycle Bin",
+                "16. Amaliy o‘yin: «Fayllar detektivi» — qidirish va saralash",
+                // 5-Oy: Yanvar (Word matn muharriri)
+                "17. Word dasturida shrift, o‘lcham va matn rangini sozlash",
+                "18. Matnni tekislash va ro‘yxatlar (nuqtali, raqamli) tuzish",
+                "19. Word hujjatiga rasm va tayyor shakllar (Shapes) qo‘shish",
+                "20. Amaliy ish: Tabriknoma yoki e’lon tayyorlash",
+                // 6-Oy: Fevral (Grafik muharrir va dizayn)
+                "21. Paint dasturida murakkab shakllar va chiziqlar bilan ishlash",
+                "22. Rasmlarni qirqish (Crop), o‘lchamini o‘zgartirish va matn yozish",
+                "23. Canva platformasida bolalar uchun plakat dizayni",
+                "24. Loyiha: «Mening orzuimdagi maktab» rasm va poster loyihasi",
+                // 7-Oy: Mart (PowerPoint taqdimotlari)
+                "25. PowerPoint dasturida yangi slaydlar yaratish va dizayn tanlash",
+                "26. Slaydlarga sarlavha, qisqa matn va rasmlar joylashtirish",
+                "27. Slaydlar o‘rtasida o‘tish (Transitions) va oddiy animatsiyalar",
+                "28. Loyiha: 5 slaydli mini-taqdimot yaratish va namoyish etish",
+                // 8-Oy: Aprel (Excel jadvallari bilan tanishuv)
+                "29. Excel oynasi: ustun, satr va katak manzillari (A1, B2)",
+                "30. Excelda ro‘yxat tuzish va kataklarni bo‘yash",
+                "31. Excelda eng sodda hisoblash amallari (Qo‘shish va ayirish)",
+                "32. Loyiha: «Haftalik dars jadvalim»ni Excelda yaratish",
+                // 9-Oy: May (Xavfsiz internet va axborot qidirish)
+                "33. Brauzerda xavfsiz qidiruv va bolalar uchun foydali saytlar",
+                "34. Internetdan o‘quv loyihasi uchun rasm va ma’lumot saqlash",
+                "35. Kiberxavfsizlik: Shaxsiy ma’lumot va parol madaniyati",
+                "36. Onlayn muloqot odobi (Netiquette) va raqamli iz",
+                // 10-Oy: Iyun (Algoritmik fikrlash va yakuniy loyiha)
+                "37. Ketma-ketlik va algoritm tushunchasi (Qadam-baqadam buyruqlar)",
+                "38. Blokli dasturlash o‘yinlari (Code.org / Scratch Jr asoslari)",
+                "39. Yillik yakuniy ijodiy loyiha tayyorlash",
+                "40. Yakuniy loyiha taqdimoti va yillik takrorlash"
+            ],
+
+            "it_5": [
+                // 1-Oy: Sentabr (Word dasturi asoslari)
+                "1. Word interfeysi bilan tanishish (lentachalar va asboblar paneli)",
+                "2. Matn yozish va oddiy formatlash (shrift, rang, o‘lcham)",
+                "3. Paragraf sozlamalari — oraliq, joylashtirish va ro‘yxatlar",
+                "4. Yangi fayl yaratish, saqlash, yopish va qayta ochish",
+                // 2-Oy: Oktyabr (Word kengaytirilgan imkoniyatlari)
+                "5. Jadval yaratish, kataklarga matn kiritish va formatlash",
+                "6. Rasm, shakl (Shapes) va SmartArt grafik elementlarini joylashtirish",
+                "7. Sarlavhalar, sahifa raqamlari, Header va Footer",
+                "8. Hujjatni PDF formatda saqlash, oldindan ko‘rish va chop etish",
+                // 3-Oy: Noyabr (PowerPoint asoslari)
+                "9. PowerPoint interfeysi va yangi prezentatsiya yaratish",
+                "10. Slaydga sarlavha, matn va kichik yozuvlar qo‘shish",
+                "11. Rasm, shakl va ikonkalarni slaydga joylashtirish",
+                "12. Tayyor prezentatsiyani saqlash va namoyish qilish",
+                // 4-Oy: Dekabr (PowerPoint kengaytirilgan funksiyalari)
+                "13. Slayd dizaynlari va tayyor shablonlar (Templates) bilan ishlash",
+                "14. Animatsiya va slaydlararo o‘tish (Transition) effektlari",
+                "15. Video, audio va gipermurojaat (Hyperlink) qo‘shish",
+                "16. Slaydni namoyish qilish, PDF va video sifatida saqlash",
+                // 5-Oy: Yanvar (Excel asoslari)
+                "17. Excel interfeysi: ustun, qator va kataklar bilan tanishish",
+                "18. Ma’lumot kiritish va asosiy formatlash (matn, raqam, chegara)",
+                "19. Oddiy formulalar va funksiyalar: =SUM(), =AVERAGE(), =MAX(), =MIN()",
+                "20. Excel jadvalini saqlash va sahifaga moslab chop etish",
+                // 6-Oy: Fevral (Excel kengaytirilgan funksiyalari)
+                "21. Diagrammalar yaratish: ustunli (Bar), doiraviy (Pie), chiziqli (Line)",
+                "22. Ma’lumotlarni saralash va filtrlash (Sort & Filter)",
+                "23. Shartli formatlash (Conditional Formatting) bilan ishlash",
+                "24. Nisbiy va mutlaq katak manzillari (A1 va $A$1)",
+                // 7-Oy: Mart (Paint, 3D Paint va Canva)
+                "25. Paint dasturida rasm chizish va bo‘yash",
+                "26. Shakllar, ranglar va matnlar bilan ishlash (Paint / Canva)",
+                "27. 3D Paint bilan tanishish va uch o‘lchamli modellar yaratish",
+                "28. Chizilgan rasmlar va plakatlarni saqlash hamda chop etishga tayyorlash",
+                // 8-Oy: Aprel (Bulutli xotira va Elektron pochta)
+                "29. Google Drive va OneDrive — bulutli xotirada fayllarni saqlash",
+                "30. Bulutda yangi hujjat yaratish, papkalar ochish va ulashish (Share)",
+                "31. Gmail interfeysi: elektron xat yozish, yuborish va qabul qilish",
+                "32. Pochtaga fayl biriktirish, xavfsizlik va odob qoidalari",
+                // 9-Oy: May (Google xizmatlari: Docs, Sheets, Slides — 1-qism)
+                "33. Google Docs — onlayn hujjat yaratish va formatlash",
+                "34. Google Sheets — onlayn jadval yaratish va oddiy formulalar",
+                "35. Google Slides — onlayn taqdimot yaratish va dizaynlar",
+                "36. Hujjatlarni bulutda saqlash va jamoaviy hamkorlik (Collaboration)",
+                // 10-Oy: Iyun (Google xizmatlari — 2-qism va Yakuniy loyiha)
+                "37. Google Docs — jadvallar, rasmlar va ovozli yozish funksiyasi",
+                "38. Google Sheets & Google Forms — filtr, diagramma va onlayn so‘rovnoma",
+                "39. Google Slides — multimedia (ovoz va video) joylashtirish",
+                "40. Yil yakuniy loyihasi: Google xizmatlarida mustaqil taqdimot"
+            ],
+
+            "it_6": [
+                // 1-Oy: Sentabr (Brauzer va Arxivlash texnologiyalari)
+                "1. Brauzerning kengaytirilgan funksiyalari, xatcho‘plar va kengaytmalar",
+                "2. Brauzer ma’lumotlari: tarix, kesh, kukilar va xavfsizlik sozlamalari",
+                "3. ZIP, RAR va 7Z arxivlari bilan ishlash asoslari",
+                "4. Kengaytirilgan arxivlash: parol qo‘yish, siqish va bo‘laklash",
+                // 2-Oy: Oktyabr (MS Word Professional va PDFgear)
+                "5. MS Word yuqori bosqichi: uslublar (Styles), avtomatik mundarija va bo‘limlar",
+                "6. Word hujjatlarini tahrirlash, izohlar (Comments) va hamkorlikda ishlash",
+                "7. PDFgear: PDF hujjatlarni o‘qish, tahrirlash va belgilash (Annotatsiya)",
+                "8. PDFgear asosiy fayl operatsiyalari: birlashtirish, ajratish va konvertatsiya",
+                // 3-Oy: Noyabr (Professional Taqdimotlar: PowerPoint & Prezi)
+                "9. PowerPoint dizaynini takomillashtirish: Slide Master va kompozitsiya",
+                "10. Interaktiv PowerPoint: gipermurojaatlar, tugmalar va trigger animatsiyalar",
+                "11. Prezi platformasi asoslari va chiziqsiz (zoom) taqdimotlar yaratish",
+                "12. Prezi kengaytirilgan funksiyalari va interaktiv loyiha himoyasi",
+                // 4-Oy: Dekabr (MS Excel Ma'lumotlar Tahlili va Dashboard)
+                "13. MS Excel: professional jadvallar tuzish va ma’lumot turlarini boshqarish",
+                "14. Excel yangi va mantiqiy formulalar (IF, SUMIF, COUNTIF, VLOOKUP)",
+                "15. Ma’lumotlarni tahlil qilish, murakkab saralash va filtrlash",
+                "16. Dinamik diagrammalar va interaktiv Mini-Dashboard yaratish",
+                // 5-Oy: Yanvar (Excel Pro va Moliyaviy/Statistik hisob-kitoblar)
+                "17. Excel Pivot Table (Yig‘ma jadvallar) yordamida tezkor tahlil",
+                "18. Ma’lumotlarni tekshirish (Data Validation) va ochiluvchi ro‘yxatlar",
+                "19. Matn va sana funksiyalari bilan ishlash",
+                "20. Loyiha: Maktab yoki oilaviy budjet tahlili jadvali",
+                // 6-Oy: Fevral (Canva va Zamonaviy Grafik Dizayn)
+                "21. Canva Pro imkoniyatlari: brend-kit, shriftlar va ranglar uyg‘unligi",
+                "22. Infografika, sertifikat va taqdimot afishalarini loyihalash",
+                "23. Ijtimoiy tarmoqlar va tadbirlar uchun karusel hamda vizual postlar",
+                "24. Loyiha: Maktab tadbiri uchun to‘liq vizual media-paket yaratish",
+                // 7-Oy: Mart (Bulutli texnologiyalar va Jamoaviy ish)
+                "25. Google Drive va OneDrive: bulutli arxiv va ruxsat darajalari",
+                "26. Google Docs da jamoaviy hujjat yuritish va versiyalar tarixi",
+                "27. Google Sheets da onlayn ma’lumotlar bazasi va jamoaviy jadval",
+                "28. Google Forms orqali test va tadqiqot so‘rovnomalarini o‘tkazish",
+                // 8-Oy: Aprel (Veb-texnologiyalar va Notion / Google Sites)
+                "29. Google Sites yordamida shaxsiy yoki loyiha veb-saytini yaratish",
+                "30. Veb-sahifaga matn, galereya, xarita va shakllar joylashtirish",
+                "31. Notion platformasida shaxsiy baza va vazifalar menejerini tuzish",
+                "32. Loyiha: Shaxsiy raqamli portfolio saytini ishga tushirish",
+                // 9-Oy: May (Kiberxavfsizlik va Axborot madaniyati)
+                "33. Kiberxavfsizlik: Ikki bosqichli himoya (2FA) va parol menejerlari",
+                "34. Fishing (Phishing), ijtimoiy muhandislik va zararli dasturlardan himoya",
+                "35. Mualliflik huquqi, litsenziyalar va raqamli etika",
+                "36. Kompyuter texnik xizmati: tizimni tozalash va tezlashtirish",
+                // 10-Oy: Iyun (Yakuniy IT Loyiha)
+                "37. Yakuniy kompleks IT loyiha mavzusini tanlash va rejalashtirish",
+                "38. Loyiha hujjatlari va Excel tahliliy dashboardini tayyorlash",
+                "39. Loyiha veb-sahifasi va Prezi / PowerPoint taqdimotini yakunlash",
+                "40. Yakuniy IT loyihalar himoyasi va sarhisob"
+            ],
+
+            "ai_5": [
+                // 1-Oy: Sentabr (AI bilan xavfsiz ishlash)
+                "1. Sun’iy intellekt nima? AI nima qila oladi va nima qila olmaydi?",
+                "2. Internetda shaxsiy ma’lumotlarni himoya qilish. Soxta va ishonchli AI vositalarini ajratish",
+                "3. AI’dan foydalanish qoidalari. Noto‘g‘ri va to‘g‘ri misollar bilan mashq qilish",
+                "4. AI xavfsizligi bo‘yicha viktorina va test",
+                // 2-Oy: Oktyabr (AI yordamida o‘rganish)
+                "5. AI bilan matnlarni qisqacha tushunish va asosiy g‘oyalarni ajratish",
+                "6. Dars mavzusiga oid qo‘shimcha ma’lumot topish uchun AI’dan foydalanish",
+                "7. AI bilan mashq qilish — test, so‘z boyligini kengaytirish, savol-javob",
+                "8. AI bilan birga qiziqarli bilim o‘yinlari («Kim topqir?»)",
+                // 3-Oy: Noyabr (AI bilan matn yozish va yaxshilash)
+                "9. AI yordamida hikoya yoki insho yozish",
+                "10. AI’dan foydalanib matnni yaxshilash va xatolarni tuzatish",
+                "11. AI bilan turli matn uslublarida yozish (rasmiy, ilmiy, kundalik)",
+                "12. O‘quvchilar AI yordamida yozgan eng yaxshi matnlarini taqdim etishadi",
+                // 4-Oy: Dekabr (AI yordamida rejalashtirish)
+                "13. AI bilan kunlik va haftalik tartib-reja tuzish",
+                "14. AI yordamida o‘quv maqsadlarini belgilash va rejalashtirish",
+                "15. AI’dan foydalanib katta loyihalarni kichik qadamlarga bo‘lib rejalashtirish",
+                "16. Loyiha: Shaxsiy o‘qish va rivojlanish rejasini yaratish",
+                // 5-Oy: Yanvar (AI yordamida ijodiy ishlar)
+                "17. AI yordamida rasm chizish va dizayn yaratish",
+                "18. AI bilan musiqiy ritmlar yoki she’rlar yozish",
+                "19. AI yordamida multfilm yoki animatsiya yaratish",
+                "20. Ijodiy ishlarni taqdim qilish va baholash",
+                // 6-Oy: Fevral (AI bilan axborotni tahlil qilish)
+                "21. AI yordamida matnni tahlil qilish va asosiy ma’lumotlarni ajratish",
+                "22. AI bilan grafik va diagrammalarni tushunish",
+                "23. AI orqali statistik ma’lumotlarni o‘rganish va taqdim qilish",
+                "24. Tanlangan mavzu bo‘yicha AI yordamida tahliliy ish",
+                // 7-Oy: Mart (AI yordamida kod yozish — asosiy dasturlash)
+                "25. AI yordamida oddiy dasturlash tushunchalarini o‘rganish",
+                "26. Scratch va vizual dasturlash vositalarida AI ko‘magida kod yozish",
+                "27. AI yordamida kodlarni tahlil qilish va xatolarni topish",
+                "28. Loyiha: AI yordamida yaratilgan mini-dasturlar taqdimoti",
+                // 8-Oy: Aprel (AI bilan tez va samarali qidiruv)
+                "29. AI bilan to‘g‘ri savol (prompt) qo‘yish va eng yaxshi natijalarni olish",
+                "30. AI yordamida maqola va kitoblardan kerakli ma’lumotni topish",
+                "31. AI bilan ishonchli va noto‘g‘ri (feyk) axborotni ajratish",
+                "32. Mustaqil qidiruv natijalari asosida kichik taqdimot tayyorlash",
+                // 9-Oy: May (AI yordamida video yaratish va tahrirlash)
+                "33. AI yordamida qisqa video yaratish va montaj qilish",
+                "34. AI bilan videoga subtitr va ovoz qo‘shish",
+                "35. AI orqali videolarga effekt qo‘shish va yakuniy montaj",
+                "36. Loyiha: AI yordamida yaratilgan videolar namoyishi",
+                // 10-Oy: Iyun (AI yordamida kelajak kasblarini o‘rganish)
+                "37. AI ishlatiladigan zamonaviy kasblar va ularning imkoniyatlari",
+                "38. AI orqali shaxsiy qiziqishlar asosida kelajak kasbini tanlash",
+                "39. AI bilan kelajakdagi ish o‘rinlari va texnologiyalarni bashorat qilish",
+                "40. Yakuniy taqdimot: «Mening kelajak kasbim va Sun’iy intellekt»"
+            ],
+
+            "ai_6_7": [
+                // 1-Oy: Sentabr (Prompt Engineering va Shaxsiy AI Repetitor)
+                "1. To‘g‘ri prompt yozish qoidalari (Rol, Vazifa, Kontekst, Format)",
+                "2. Shaxsiy AI repetitor: ChatGPT bilan fanlarni o‘rganish",
+                "3. Rasm, jadval va hujjatlarni AI yordamida tahlil qilish",
+                "4. AI javoblarini tekshirish (Fact-checking va gallyutsinatsiyalar)",
+                // 2-Oy: Oktyabr (Canva AI va Vizual Dizayn)
+                "5. Canva AI: Magic Write va Magic Design imkoniyatlari",
+                "6. Matndan AI tasvir yaratish (Text-to-Image va uslublar)",
+                "7. AI yordamida tasvirni tahrirlash (Oldin va keyin tahlili)",
+                "8. Oylik AI dizayn loyihasi: «Kelajak kasblari» A4 posteri",
+                // 3-Oy: Noyabr (AI Audio va Musiqa Loyihasi)
+                "9. Promptdan instrumental musiqa yaratish (Suno / Udio)",
+                "10. AI yordamida qo‘shiq matni yaratish (Kitob va ilm mavzusida)",
+                "11. Musiqiy uslub va janrlarni AI orqali boshqarish",
+                "12. Oylik musiqa loyihasi: Maktab jingle (audio) loyihasi",
+                // 4-Oy: Dekabr (AI yordamida vaqt va loyiha rejalashtirish)
+                "13. AI bilan kunlik va haftalik o‘quv rejasini tuzish",
+                "14. SMART maqsadlar qo‘yish va AI trekerlar bilan ishlash",
+                "15. Katta maktab loyihalarini AI yordamida bosqichlarga ajratish",
+                "16. Loyiha: Shaxsiy rivojlanish yo‘l xaritasi taqdimoti",
+                // 5-Oy: Yanvar (AI Hikoyanavislik, Komiks va Animatsiya)
+                "17. AI yordamida ssenariy va personajlar xarakterini yaratish",
+                "18. Storyboard va komiks sahifalarini AI tasvirlari bilan tayyorlash",
+                "19. Jonlantirish va ovozlashtirish (Text-to-Speech & Animation AI)",
+                "20. Loyiha: Qisqa animatsion hikoya namoyishi",
+                // 6-Oy: Fevral (AI bilan Ma'lumot va Jadval Tahlili)
+                "21. Katta matn va maqolalardan kalit faktlarni ajratish",
+                "22. AI yordamida grafik, infografika va diagrammalarni o‘qish",
+                "23. Statistik ma’lumotlarni umumlashtirish va taqqoslash",
+                "24. Loyiha: Tanlangan ilmiy mavzu bo‘yicha AI tahliliy hisoboti",
+                // 7-Oy: Mart (AI yordamida Dasturlash va Algoritmlar)
+                "25. AI yordamida algoritm va mantiqiy masalalarni yechish",
+                "26. Scratch va Python boshlang‘ich kodlarini AI ko‘magida yozish",
+                "27. Kodlardagi xatolarni (Bug) AI yordamida topish va tuzatish",
+                "28. Loyiha: AI ko‘magida mini-o‘yin yoki viktorina yaratish",
+                // 8-Oy: Aprel (AI Qidiruv Tizimlari va Tadqiqot)
+                "29. Perplexity va AI qidiruv tizimlarida manbali ma’lumot izlash",
+                "30. Kitob va o‘quv qo‘llanmalardan konspekt hamda glossariy tuzish",
+                "31. Deepfake, feyk xabarlar va AI manipulyatsiyalarini aniqlash",
+                "32. Loyiha: Tekshirilgan o‘quv qo‘llanma va mini-tadqiqot taqdimoti",
+                // 9-Oy: May (AI Video Yaratish va Montaj)
+                "33. AI video generatorlari va ssenariydan videoga o‘tish",
+                "34. Videolarga avtomatik subtitr, tarjima va ovoz qo‘shish",
+                "35. CapCut AI va vizual effektlar bilan videoni boyitish",
+                "36. Loyiha: O‘quv mavzusida 1 daqiqalik ta’limiy video-rolik",
+                // 10-Oy: Iyun (Kelajak Kasblari va Yakuniy AI Portfolio)
+                "37. AI davridagi yangi kasblar va talabgir ko‘nikmalar",
+                "38. Qiziqishlar tahlili va AI yordamida kasbga yo‘naltirish",
+                "39. Yillik AI loyihalaridan shaxsiy portfolio jamlash",
+                "40. Yakuniy himoya: «Amaliy AI loyihalarim» festivali"
+            ],
+
+            "ai_huquq_med": [
+                // 1-Oy: Sentabr (Akademik Prompt Engineering va AI Repetitor)
+                "1. To‘g‘ri prompt yozish: Huquq, til va tibbiyot uchun aniq so‘rov tuzish",
+                "2. ChatGPT shaxsiy repetitor sifatida (20 daqiqalik dars metodikasi)",
+                "3. AI bilan murakkab materiallar, jadvallar va hujjatlarni tahlil qilish",
+                "4. AI javoblarini tekshirish: faktlar, manbalar va gallyutsinatsiyalar tahlili",
+                // 2-Oy: Oktyabr (Vizual Kommunikatsiya va Ilmiy Posterlar)
+                "5. Canva AI: Magic Write va Magic Design yordamida ilmiy plakatlar",
+                "6. Matndan AI tasvir yaratish: Uch xil uslubda vizualizatsiya",
+                "7. AI yordamida tasvirni tahrirlash va sifatini oshirish",
+                "8. Oylik loyiha: Sohalar bo‘yicha «Kelajak kasblari» A4 posteri",
+                // 3-Oy: Noyabr (Audio, Nutq va Media Loyihalar)
+                "9. Promptdan instrumental musiqa va fon audiosi yaratish",
+                "10. AI yordamida ma’rifiy va kitob haqida matn/qo‘shiq yaratish",
+                "11. Audio uslublarni boshqarish va podkast kirish qismini tayyorlash",
+                "12. Oylik loyiha: Maktab va fakultet audio-jingle loyihasi",
+                // 4-Oy: Dekabr (Huquq va Tibbiyotda Hujjatlar bilan Ishlash)
+                "13. Rasmiy, huquqiy va tibbiy matnlar tuzilishi hamda AI tahlili",
+                "14. Katta hajmli qonun, maqola va klinik protokollarni qisqartirish (Summary)",
+                "15. Terminologiya lug‘ati va ko‘p tilli akademik tarjima (AI Translation)",
+                "16. Loyiha: Sohaviy ma’lumotnoma va tekshirilgan o‘quv qo‘llanma yaratish",
+                // 5-Oy: Yanvar (Xalqaro Tillar va Muloqotda Sun'iy Intellekt)
+                "17. Chet tillarini (IELTS / CEFR / Akademik til) AI bilan mashq qilish",
+                "18. Esse, rasmiy xat va apellyatsiya matnlarini AI bilan tahrirlash",
+                "19. AI ovozli suhbatdosh bilan nutq va talaffuzni rivojlantirish",
+                "20. Loyiha: Xalqaro konferensiya uchun ikki tilli ma’ruza tayyorlash",
+                // 6-Oy: Fevral (Ilmiy Tadqiqot va Statistik Tahlil)
+                "21. Ilmiy maqolalar qidirish (Perplexity, Consensus, Google Scholar & AI)",
+                "22. So‘rovnoma tuzish va tibbiy/ijtimoiy statistikani AI da tahlil qilish",
+                "23. Grafik va diagrammalar asosida tahliliy xulosalar chiqarish",
+                "24. Loyiha: Fakultet mavzusida mini-tadqiqot hisoboti",
+                // 7-Oy: Mart (Keys-Stadi: Huquqiy va Tibbiy Vaziyatlar Tahlili)
+                "25. AI yordamida huquqiy kazuslar va tibbiy simptomlar tahlili metodikasi",
+                "26. Qaror qabul qilishda AI tavsiyalari va inson nazorati (Human-in-the-loop)",
+                "27. Noto‘g‘ri tashxis yoki xato huquqiy talqinlarni aniqlash mashg‘uloti",
+                "28. Loyiha: Real keys-stadi tahlili va yechim taqdimoti",
+                // 8-Oy: Aprel (AI Etikasi, Huquq va Tibbiy Maxfiylik)
+                "29. Tibbiyot va huquqda shaxsiy ma’lumotlar maxfiyligi",
+                "30. Sun’iy intellekt va mualliflik huquqi, akademik halollik",
+                "31. Deepfake, soxta dalillar va kiberjinoyatchilikka qarshi kurash",
+                "32. Debat darsi: «Sud va tibbiyotda AI qarorlariga ishonish mumkinmi?»",
+                // 9-Oy: May (Notiqlik, Taqdimot va Ilmiy Video Kontent)
+                "33. Ilmiy va ommabop ma’ruza uchun AI yordamida ssenariy yozish",
+                "34. Gamma AI, Tome va Canva da professional taqdimot yaratish",
+                "35. AI yordamida ma’rifiy video-rolik, subtitr va ovozli dublyaj",
+                "36. Loyiha: Huquqiy yoki tibbiy savodxonlik bo‘yicha media-rolik",
+                // 10-Oy: Iyun (Yakuniy Fakultet Loyihasi)
+                "37. Fakultet yakuniy AI loyihasi mavzusini tanlash va tadqiqot rejasi",
+                "38. AI vositalari yordamida tahliliy qism va vizual materiallarni yig‘ish",
+                "39. Taqdimot va nutq mashqi (Pitch & Q&A tayyorgarlik)",
+                "40. Yakuniy Fakultet Loyihasi himoyasi va sertifikatlash"
+            ],
+
+            "ai_business": [
+                // 1-Oy: Sentabr (AI yordamida biznes g‘oyalarini yaratish)
+                "1. Sun’iy intellekt yordamida biznes g‘oyalarini topish (ChatGPT, Gemini)",
+                "2. AI bilan bozordagi tendensiyalarni va muammolarni tahlil qilish",
+                "3. Tanlangan biznes g‘oyasini AI orqali saralash va mustahkamlash",
+                "4. Amaliyot: Har bir guruh o‘z biznes g‘oyasini taqdim etadi",
+                // 2-Oy: Oktyabr (AI marketing — ijtimoiy tarmoqlarda reklama)
+                "5. Sun’iy intellekt yordamida marketing strategiyasini yaratish",
+                "6. AI bilan reklamalar uchun post va jalb qiluvchi sarlavhalar yozish",
+                "7. Canva AI bilan vizual reklamalar va bannerlar tayyorlash",
+                "8. Loyiha: Reklama kampaniyasi va 1 oylik kontent reja taqdimoti",
+                // 3-Oy: Noyabr (Sun’iy intellekt bilan bozor tadqiqoti)
+                "9. AI yordamida bozor tendensiyalarini tahlil qilish (Google Trends & AI)",
+                "10. Maqsadli auditoriya va iste’molchi ehtiyojlarini AI orqali o‘rganish",
+                "11. Raqobatchilarni AI bilan tahlil qilish (SWOT tahlil)",
+                "12. Loyiha: Guruhlar bozor tadqiqoti hisobotini taqdim etadi",
+                // 4-Oy: Dekabr (AI bilan brend nomi va logotip yaratish)
+                "13. AI yordamida brend nomi (Namelix) va shiorlar (Slogan) yaratish",
+                "14. AI generatorlari yordamida logotip dizayn qilish",
+                "15. Sun’iy intellekt bilan brend identifikatsiyasi (Brand Book) yaratish",
+                "16. Loyiha: Eng yaxshi brend dizayni tanlovi va himoyasi",
+                // 5-Oy: Yanvar (AI chatbot yaratish — mijozlarga xizmat ko‘rsatish)
+                "17. Chatbotlarning zamonaviy biznesdagi o‘rni va turlari",
+                "18. Mijozlar savollariga javob beruvchi AI chatbot ssenariysini tuzish",
+                "19. Chatbotni mijozlarga xizmat ko‘rsatish uchun sozlash va avtomatik javoblar",
+                "20. Loyiha: Guruhlar o‘z chatbotlarini sinab ko‘radi va namoyish etadi",
+                // 6-Oy: Fevral (AI bilan moliyaviy rejalashtirish)
+                "21. Biznes budjeti tushunchasi va AI moliyada qanday yordam berishi",
+                "22. Sun’iy intellekt bilan daromad va xarajatlarni hisoblash hamda optimallashtirish",
+                "23. AI bilan biznesning moliyaviy barqarorligini baholash (Foyda va zarar modeli)",
+                "24. Loyiha: Biznes moliyaviy rejasini taqdim qilish",
+                // 7-Oy: Mart (AI bilan sotuv nutqini tayyorlash)
+                "25. Yaxshi sotuv nutqi (Sales Pitch) qanday bo‘lishi kerak?",
+                "26. Sun’iy intellekt bilan sotuv matnlari va sovuq qo‘ng‘iroq skriptlarini yaratish",
+                "27. Nutqni AI va inson kombinatsiyasi bilan tahrirlash hamda kuchaytirish",
+                "28. Loyiha: «O‘z mahsulotimni sotaman» sotuv nutqi taqdimoti",
+                // 8-Oy: Aprel (AI yordamida e-tijorat do‘koni yaratish)
+                "29. E-tijorat (E-commerce) tushunchasi va AI imkoniyatlari",
+                "30. AI yordamida mahsulot nomlari, SEO ta’riflari va sifatli vizuallar yaratish",
+                "31. AI bilan onlayn do‘kon tuzilmasi va konversiyani oshirish",
+                "32. Loyiha: Guruhlar o‘z onlayn do‘kon prototipini taqdim qiladi",
+                // 9-Oy: May (Sun’iy intellekt bilan biznes qarorlar qabul qilish)
+                "33. AI qanday qilib biznes qarorlarini tavsiya qiladi? (Recommendation systems)",
+                "34. Sun’iy intellekt yordamida tavakkalchilik (Risk) va imkoniyatlarni baholash",
+                "35. Real keys-stadi orqali biznes strategiyasini AI bilan ishlab chiqish",
+                "36. Loyiha: Guruhlar o‘z strategik biznes qarorlarini himoya qiladi",
+                // 10-Oy: Iyun (Yakuniy loyiha — AI bilan mini-startap yaratish)
+                "37. Sun’iy intellekt bilan mini-startap g‘oyasini shakllantirish",
+                "38. AI yordamida startapni rejalashtirish (moliya, marketing, mijozlar)",
+                "39. Startap taqdimoti va Pitch Deck yaratish",
+                "40. Yakuniy «AI Startap Pitch» tanlovi va loyihalar himoyasi"
+            ]
+        };
+
+        // ============================================================================
+        // 2. ILOVA HOLATI VA XOTIRA BOSHQARUVI (LocalStorage + GitHub Cloud Sync)
+        // ============================================================================
+        let selectedMonth = 0; // 0 = Barchasi, 1..10 = Sentabr..Iyun
+        let statusFilter = 'all'; // 'all' | 'pending' | 'done'
+        let syncTimer = null;
+        let isSyncing = false;
+        let deferredPwaPrompt = null;
+
+        const CLOUD_META_KEY = 'omon_cloud_meta_v2';
+        const CUSTOM_GROUPS_KEY = 'omon_custom_groups_v2';
+        const LAST_SELECTION_KEY = 'omon_last_selection_v2';
+
+        function getTodayISO() {
+            const d = new Date();
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        function formatDateUz(isoStr) {
+            if (!isoStr) return '';
+            const parts = isoStr.split('-');
+            if (parts.length !== 3) return isoStr;
+            return `${parts[2]}.${parts[1]}.${parts[0]}`;
+        }
+
+        function showToast(msg, duration = 3200) {
+            const box = document.getElementById('toastBox');
+            box.textContent = msg;
+            box.classList.remove('hidden');
+            clearTimeout(box._timer);
+            box._timer = setTimeout(() => {
+                box.classList.add('hidden');
+            }, duration);
+        }
+
+        function getAllGroups() {
+            let custom = [];
+            try {
+                custom = JSON.parse(localStorage.getItem(CUSTOM_GROUPS_KEY)) || [];
+            } catch (e) {
+                custom = [];
+            }
+            return [...DEFAULT_GROUPS, ...custom];
+        }
+
+        function populateGroupsSelect() {
+            const select = document.getElementById('groupSelect');
+            const currentVal = select.value;
+            const groups = getAllGroups();
+            const sinflar = groups.filter(g => g.category === 'sinf');
+            const guruhlar = groups.filter(g => g.category === 'guruh');
+            const custom = groups.filter(g => !g.category);
+
+            let html = `<optgroup label="🏫 Sinflar (1–7 sinflar A va B)">` +
+                sinflar.map(g => `<option value="${g.id}">${g.name}</option>`).join('') +
+                `</optgroup>` +
+                `<optgroup label="🎓 Guruhlar (Fakultetlar)">` +
+                guruhlar.map(g => `<option value="${g.id}">${g.name}</option>`).join('') +
+                `</optgroup>`;
+
+            if (custom.length > 0) {
+                html += `<optgroup label="➕ Qo'shimcha guruhlar">` +
+                    custom.map(g => `<option value="${g.id}">${g.name}</option>`).join('') +
+                    `</optgroup>`;
+            }
+
+            select.innerHTML = html;
+            if (currentVal && groups.some(g => g.id === currentVal)) {
+                select.value = currentVal;
+            }
+        }
+
+        function openGroupDialog() {
+            document.getElementById('newGroupName').value = '';
+            document.getElementById('groupDialog').showModal();
+        }
+
+        function addCustomGroup(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('newGroupName');
+            const name = nameInput.value.trim();
+            if (!name) return;
+            const id = 'custom_' + name.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now().toString(36).slice(-3);
+            let custom = [];
+            try {
+                custom = JSON.parse(localStorage.getItem(CUSTOM_GROUPS_KEY)) || [];
+            } catch (err) {
+                custom = [];
+            }
+            custom.push({ id, name });
+            localStorage.setItem(CUSTOM_GROUPS_KEY, JSON.stringify(custom));
+            populateGroupsSelect();
+            document.getElementById('groupSelect').value = id;
+            document.getElementById('groupDialog').close();
+            onFilterChange();
+            scheduleCloudPush();
+            showToast(`✅ "${name}" guruhi qo'shildi!`);
+        }
+
+        // Normalize legacy boolean progress (`{0: true}`) and rich v2 progress (`{0: {done: true, date: '...', note: '...', customTitle: '...'}}`)
+        function getGroupData(classKey, groupKey) {
+            const storageKey = `omon_full_${classKey}_${groupKey}`;
+            let raw = {};
+            try {
+                raw = JSON.parse(localStorage.getItem(storageKey)) || {};
+            } catch (e) {
+                raw = {};
+            }
+            const normalized = { _updatedAt: raw._updatedAt || 0, items: {} };
+            for (const k of Object.keys(raw)) {
+                if (k === '_updatedAt' || k === 'items') continue;
+                const val = raw[k];
+                if (typeof val === 'boolean') {
+                    normalized.items[k] = { done: val, date: '', note: '', customTitle: '' };
+                } else if (val && typeof val === 'object') {
+                    normalized.items[k] = {
+                        done: Boolean(val.done),
+                        date: val.date || '',
+                        note: val.note || '',
+                        customTitle: val.customTitle || ''
+                    };
+                }
+            }
+            if (raw.items && typeof raw.items === 'object') {
+                for (const k of Object.keys(raw.items)) {
+                    const val = raw.items[k];
+                    normalized.items[k] = {
+                        done: Boolean(val.done),
+                        date: val.date || '',
+                        note: val.note || '',
+                        customTitle: val.customTitle || ''
+                    };
+                }
+            }
+            return normalized;
+        }
+
+        function saveGroupData(classKey, groupKey, groupData) {
+            const storageKey = `omon_full_${classKey}_${groupKey}`;
+            groupData._updatedAt = Date.now();
+            // Also keep top-level boolean keys for backward compatibility
+            const payload = { _updatedAt: groupData._updatedAt, items: groupData.items };
+            for (const [idx, item] of Object.entries(groupData.items)) {
+                if (item.done) payload[idx] = true;
+            }
+            localStorage.setItem(storageKey, JSON.stringify(payload));
+            scheduleCloudPush();
+        }
+
+        // ============================================================================
+        // 3. UI RENDERING (Oylar, Mavzular, Navbatdagi dars, Hisobot)
+        // ============================================================================
+        function renderMonthTabs() {
+            const classKey = document.getElementById('classSelect').value;
+            const groupKey = document.getElementById('groupSelect').value;
+            const groupData = getGroupData(classKey, groupKey);
+            const container = document.getElementById('monthTabs');
+
+            container.innerHTML = MONTHS.map(m => {
+                let badge = '';
+                if (m.id > 0) {
+                    const startIdx = (m.id - 1) * 4;
+                    let mDone = 0;
+                    for (let i = startIdx; i < startIdx + 4; i++) {
+                        if (groupData.items[i]?.done) mDone++;
+                    }
+                    badge = `<span class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full ${mDone === 4 ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-700'}">${mDone}/4</span>`;
+                }
+                const active = selectedMonth === m.id;
+                return `
+                    <button type="button" role="tab" aria-selected="${active}" onclick="selectMonth(${m.id})"
+                        class="shrink-0 text-xs font-bold px-3.5 py-2 rounded-xl border transition flex items-center ${active ? 'bg-blue-700 text-white border-blue-700 shadow-sm' : 'bg-white text-slate-700 border-slate-200 hover:border-blue-300 hover:bg-slate-50'}">
+                        <span>${m.short}</span>${badge}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectMonth(monthId) {
+            selectedMonth = monthId;
+            renderMonthTabs();
+            renderTopics();
+        }
+
+        function setStatusFilter(filter) {
+            statusFilter = filter;
+            ['all', 'pending', 'done'].forEach(f => {
+                const btn = document.getElementById(`filter_${f}`);
+                if (f === filter) {
+                    btn.className = "flex-1 text-xs font-bold py-1.5 rounded-lg bg-white text-blue-700 shadow-sm transition";
+                } else {
+                    btn.className = "flex-1 text-xs font-bold py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition";
+                }
+            });
+            renderTopics();
+        }
+
+        function clearSearch() {
+            const inp = document.getElementById('searchInput');
+            inp.value = '';
+            document.getElementById('clearSearchBtn').classList.add('hidden');
+            renderTopics();
+        }
+
+        function onFilterChange() {
+            const classKey = document.getElementById('classSelect').value;
+            const groupKey = document.getElementById('groupSelect').value;
+            localStorage.setItem(LAST_SELECTION_KEY, JSON.stringify({ classKey, groupKey }));
+            renderMonthTabs();
+            renderTopics();
+        }
+
+        function renderTopics() {
+            const classKey = document.getElementById('classSelect').value;
+            const groupKey = document.getElementById('groupSelect').value;
+            const topics = curriculaData[classKey] || curriculaData['it_1'];
+            const groupData = getGroupData(classKey, groupKey);
+            const searchQuery = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+
+            const clearBtn = document.getElementById('clearSearchBtn');
+            if (searchQuery) clearBtn.classList.remove('hidden');
+            else clearBtn.classList.add('hidden');
+
+            // Calculate overall progress across all 40 topics
+            let completedCount = 0;
+            let firstUncompletedIndex = -1;
+            topics.forEach((_, idx) => {
+                if (groupData.items[idx]?.done) {
+                    completedCount++;
+                } else if (firstUncompletedIndex === -1) {
+                    firstUncompletedIndex = idx;
+                }
+            });
+
+            const total = topics.length;
+            const percent = Math.round((completedCount / total) * 100);
+            document.getElementById('progressText').textContent = `${completedCount} / ${total}`;
+            document.getElementById('percentBadge').textContent = `${percent}%`;
+            document.getElementById('remainingText').textContent = completedCount === total
+                ? "🎉 Barcha mavzular to'liq yakunlandi!"
+                : `${total - completedCount} ta mavzu qoldi`;
+            const progBar = document.getElementById('progressBar');
+            progBar.value = completedCount;
+            progBar.max = total;
+
+            // Update last updated badge
+            const lastBadge = document.getElementById('lastUpdatedBadge');
+            if (groupData._updatedAt) {
+                const dt = new Date(groupData._updatedAt);
+                lastBadge.textContent = `• Oxirgi o'zgarish: ${dt.toLocaleDateString('uz-UZ')} ${dt.toLocaleTimeString('uz-UZ', {hour: '2-digit', minute:'2-digit'})}`;
+                lastBadge.classList.remove('hidden');
+            } else {
+                lastBadge.classList.add('hidden');
+            }
+
+            // Update Next Topic Card
+            const nextTitleEl = document.getElementById('nextTopicTitle');
+            const nextMonthEl = document.getElementById('nextTopicMonth');
+            const markNextBtn = document.getElementById('markNextBtn');
+            if (firstUncompletedIndex !== -1) {
+                const mIdx = Math.floor(firstUncompletedIndex / 4) + 1;
+                const customT = groupData.items[firstUncompletedIndex]?.customTitle;
+                nextMonthEl.textContent = MONTHS[mIdx]?.name || '';
+                nextTitleEl.textContent = customT || topics[firstUncompletedIndex];
+                markNextBtn.disabled = false;
+                markNextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                markNextBtn.dataset.nextIndex = firstUncompletedIndex;
+            } else {
+                nextMonthEl.textContent = "10-Oy: Iyun";
+                nextTitleEl.textContent = "🎉 O'quv yili rejasi 100% bajarildi!";
+                markNextBtn.disabled = true;
+                markNextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                markNextBtn.dataset.nextIndex = -1;
+            }
+
+            // Update Mobile Sticky Bar
+            const groupName = getAllGroups().find(g => g.id === groupKey)?.name || groupKey;
+            document.getElementById('mobileBarClass').textContent = `${CLASS_NAMES[classKey].split('(')[0].trim()} • ${groupName}`;
+            document.getElementById('mobileBarProgress').textContent = `${completedCount} / ${total} (${percent}%)`;
+
+            // Render filtered topic cards grouped by month
+            const container = document.getElementById('topicsList');
+            let html = '';
+            let visibleCount = 0;
+
+            for (let m = 1; m <= 10; m++) {
+                if (selectedMonth !== 0 && selectedMonth !== m) continue;
+                const startIdx = (m - 1) * 4;
+                let monthCardsHtml = '';
+                let monthDoneCount = 0;
+
+                for (let idx = startIdx; idx < startIdx + 4 && idx < topics.length; idx++) {
+                    const item = groupData.items[idx] || { done: false, date: '', note: '', customTitle: '' };
+                    if (item.done) monthDoneCount++;
+
+                    const displayTitle = item.customTitle || topics[idx];
+                    const weekInMonth = (idx % 4) + 1;
+
+                    // Status filter check
+                    if (statusFilter === 'done' && !item.done) continue;
+                    if (statusFilter === 'pending' && item.done) continue;
+
+                    // Search filter check
+                    if (searchQuery) {
+                        const haystack = `${displayTitle} ${item.note || ''} ${MONTHS[m].name}`.toLowerCase();
+                        if (!haystack.includes(searchQuery)) continue;
+                    }
+
+                    visibleCount++;
+                    const isNext = (idx === firstUncompletedIndex);
+
+                    monthCardsHtml += `
+                        <div class="topic-card-inner flex flex-col gap-2.5 p-3.5 sm:p-4 border-2 rounded-xl transition-all duration-150 ${
+                            item.done
+                                ? 'bg-emerald-50/50 border-emerald-300/90'
+                                : isNext
+                                    ? 'bg-blue-50/40 border-blue-400 ring-2 ring-blue-100'
+                                    : 'bg-white border-slate-200/80 hover:border-blue-300 hover:bg-slate-50/60'
+                        }">
+                            <label for="chk_${idx}" class="fallback-check-label flex items-start sm:items-center gap-3.5 cursor-pointer flex-1 select-none">
+                                <input type="checkbox" id="chk_${idx}" ${item.done ? 'checked' : ''}
+                                    onchange="toggleTopic(${idx})"
+                                    class="visually-hidden w-5 h-5 sm:w-6 sm:h-6 mt-0.5 sm:mt-0 shrink-0 rounded-md cursor-pointer">
+                                <span class="topic-label-text flex-1">
+                                    <span class="flex flex-wrap items-center gap-1.5 mb-0.5">
+                                        <span class="text-[11px] font-bold px-2 py-0.5 rounded-md ${item.done ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">
+                                            ${m}-oy • ${weekInMonth}-hafta
+                                        </span>
+                                        ${isNext ? '<span class="text-[11px] font-extrabold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800">🎯 Navbatdagi dars</span>' : ''}
+                                        ${item.date ? `<span class="text-[11px] font-semibold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-md">📅 ${formatDateUz(item.date)}</span>` : ''}
+                                    </span>
+                                    <span class="block text-sm sm:text-base leading-snug ${item.done ? 'line-through text-slate-400 font-medium' : 'text-slate-800 font-bold'}">
+                                        ${escapeHtml(displayTitle)}
+                                    </span>
+                                    ${item.note ? `<span class="block mt-1 text-xs font-medium text-blue-800 bg-blue-50 border border-blue-100 rounded-lg px-2.5 py-1.5">📌 ${escapeHtml(item.note)}</span>` : ''}
+                                </span>
+                            </label>
+
+                            <div class="flex items-center justify-end gap-1.5 pl-8 sm:pl-0 shrink-0 no-print">
+                                <button type="button" onclick="openNoteDialog(${idx})" class="text-xs font-bold px-2.5 py-1.5 rounded-lg border ${item.note ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'} transition">
+                                    📝 ${item.note ? 'Izohni ko\'rish' : 'Izoh / Sana'}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                if (monthCardsHtml) {
+                    html += `
+                        <div class="mb-5">
+                            <div class="flex items-center justify-between px-1 mb-2">
+                                <h3 class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-slate-600 flex items-center gap-2">
+                                    <span>📅 ${MONTHS[m].name}</span>
+                                </h3>
+                                <span class="text-xs font-bold ${monthDoneCount === 4 ? 'text-emerald-700' : 'text-slate-500'}">${monthDoneCount} / 4 bajarildi</span>
+                            </div>
+                            <div class="space-y-2.5">
+                                ${monthCardsHtml}
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            if (visibleCount === 0) {
+                html = `
+                    <div class="text-center py-12 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
+                        <p class="text-base font-bold text-slate-600">Mos mavzular topilmadi</p>
+                        <p class="text-xs text-slate-400 mt-1">Qidiruv so'zini yoki filtrlarni o'zgartirib ko'ring</p>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        // ============================================================================
+        // 4. MAVZULARNI BELGILASH, IZOH VA SANA TAHRIRLASH
+        // ============================================================================
+        function toggleTopic(index) {
+            const classKey = document.getElementById('classSelect').value;
+            const groupKey = document.getElementById('groupSelect').value;
+            const groupData = getGroupData(classKey, groupKey);
+            const existing = groupData.items[index] || { done: false, date: '', note: '', customTitle: '' };
+
+            const newDone = !existing.done;
+            groupData.items[index] = {
+                ...existing,
+                done: newDone,
+                date: newDone ? (existing.date || getTodayISO()) : ''
+            };
+
+            saveGroupData(classKey, groupKey, groupData);
+            renderMonthTabs();
+            renderTopics();
+        }
+
+        function markNextTopicCompleted() {
+            const btn = document.getElementById('markNextBtn');
+            const nextIdx = Number(btn.dataset.nextIndex);
+            if (isNaN(nextIdx) || nextIdx < 0) return;
+            toggleTopic(nextIdx);
+            showToast(`✅ ${nextIdx + 1}-mavzu bajarildi deb belgilandi!`);
+        }
+
+        function openNoteDialog(index) {
+            const classKey = document.getElementById('classSelect').value;
+            const groupKey = document.getElementById('groupSelect').value;
+            const topics = curriculaData[classKey] || curriculaData['it_1'];
+            const groupData = getGroupData(classKey, groupKey);
+            const item = groupData.items[index] || { done: false, date: '', note: '', customTitle: '' };
+
+            document.getElementById('editTopicIndex').value = index;
+            document.getElementById('editTopicTitle').value = item.customTitle || topics[index];
+            document.getElementById('editTopicDate').value = item.date || getTodayISO();
+            document.getElementById('editTopicDone').checked = item.done;
+            document.getElementById('editTopicNote').value = item.note || '';
+
+            document.getElementById('noteDialog').showModal();
+        }
+
+        function saveTopicDetails(e) {
+            e.preventDefault();
+            const index = Number(document.getElementById('editTopicIndex').value);
+            const classKey = document.getElementById('classSelect').value;
+            const groupKey = document.getElementById('groupSelect').value;
+            const topics = curriculaData[classKey] || curriculaData['it_1'];
+            const groupData = getGroupData(classKey, groupKey);
+
+            const newTitle = document.getElementById('editTopicTitle').value.trim();
+            const newDate = document.getElementById('editTopicDate').value;
+            const newDone = document.getElementById('editTopicDone').checked;
+            const newNote = document.getElementById('editTopicNote').value.trim();
+
+            groupData.items[index] = {
+                done: newDone,
+                date: newDone ? (newDate || getTodayISO()) : newDate,
+                note: newNote,
+                customTitle: (newTitle && newTitle !== topics[index]) ? newTitle : ''
+            };
+
+            saveGroupData(classKey, groupKey, groupData);
+            document.getElementById('noteDialog').close();
+            renderMonthTabs();
+            renderTopics();
+            showToast("💾 Dars tafsilotlari saqlandi!");
+        }
+
+        function resetProgress() {
+            const classKey = document.getElementById('classSelect').value;
+            const groupKey = document.getElementById('groupSelect').value;
+            const groupName = getAllGroups().find(g => g.id === groupKey)?.name || groupKey;
+            if (confirm(`Diqqat! "${CLASS_NAMES[classKey]}" (${groupName}) uchun barcha belgilangan mavzular va izohlar tozalanadi. Davom etasizmi?`)) {
+                localStorage.removeItem(`omon_full_${classKey}_${groupKey}`);
+                scheduleCloudPush();
+                renderMonthTabs();
+                renderTopics();
+                showToast("🗑️ Belgilar tozalandi");
+            }
+        }
+
+        // ============================================================================
+        // 5. HISOBOTLAR, EXCEL (CSV) VA ZAXIRA NUSXA (JSON)
+        // ============================================================================
+        function copyTelegramReport() {
+            const classKey = document.getElementById('classSelect').value;
+            const groupKey = document.getElementById('groupSelect').value;
+            const groupName = getAllGroups().find(g => g.id === groupKey)?.name || groupKey;
+            const topics = curriculaData[classKey] || curriculaData['it_1'];
+            const groupData = getGroupData(classKey, groupKey);
+
+            let doneList = [];
+            let nextTopic = null;
+            topics.forEach((t, i) => {
+                const item = groupData.items[i];
+                const title = item?.customTitle || t;
+                if (item?.done) {
+                    doneList.push(`✅ ${title}${item.date ? ` (${formatDateUz(item.date)})` : ''}${item.note ? ` — ${item.note}` : ''}`);
+                } else if (!nextTopic) {
+                    nextTopic = title;
+                }
+            });
+
+            const pct = Math.round((doneList.length / topics.length) * 100);
+            const reportLines = [
+                `📊 OMON SCHOOL GURLAN FILIALI — DARS HISOBOTI`,
+                `📚 Yo'nalish: ${CLASS_NAMES[classKey]}`,
+                `👥 Guruh: ${groupName}`,
+                `📈 O'zlashtirish: ${doneList.length} / ${topics.length} (${pct}%)`,
+                nextTopic ? `🎯 Navbatdagi dars: ${nextTopic}` : `🎉 Barcha 40 ta dars yakunlangan!`,
+                ``,
+                doneList.length > 0 ? `✅ Oxirgi o'tilgan darslar:\n${doneList.slice(-8).join('\n')}` : `⏳ Hali darslar belgilanmagan.`
+            ];
+
+            navigator.clipboard.writeText(reportLines.join('\n')).then(() => {
+                showToast("📋 Telegram uchun hisobot nusxalandi!");
+            });
+        }
+
+        function openOverviewDialog() {
+            const listEl = document.getElementById('overviewList');
+            const groups = getAllGroups();
+            let rows = [];
+
+            for (const [cKey, cName] of Object.entries(CLASS_NAMES)) {
+                const topics = curriculaData[cKey] || [];
+                for (const g of groups) {
+                    const raw = localStorage.getItem(`omon_full_${cKey}_${g.id}`);
+                    if (!raw) continue;
+                    const gData = getGroupData(cKey, g.id);
+                    let doneCount = 0;
+                    topics.forEach((_, idx) => {
+                        if (gData.items[idx]?.done) doneCount++;
+                    });
+                    if (doneCount > 0 || Object.keys(gData.items).length > 0) {
+                        const pct = Math.round((doneCount / topics.length) * 100);
+                        rows.push({ cKey, cName, gId: g.id, gName: g.name, doneCount, total: topics.length, pct });
+                    }
+                }
+            }
+
+            if (rows.length === 0) {
+                listEl.innerHTML = `<p class="text-sm text-slate-500 text-center py-6">Hozircha hech qaysi guruhda mavzular belgilanmagan.</p>`;
+            } else {
+                listEl.innerHTML = rows.map(r => `
+                    <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-2 cursor-pointer hover:border-blue-300 transition"
+                         onclick="jumpToClassGroup('${r.cKey}', '${r.gId}')">
+                        <div>
+                            <span class="text-xs font-extrabold text-blue-700 uppercase">${r.gName}</span>
+                            <h4 class="text-sm font-bold text-slate-800">${r.cName}</h4>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <progress value="${r.doneCount}" max="${r.total}" class="w-24 h-2.5"></progress>
+                            <span class="text-xs font-extrabold text-slate-800 w-20 text-right">${r.doneCount}/${r.total} (${r.pct}%)</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('overviewDialog').showModal();
+        }
+
+        function jumpToClassGroup(cKey, gId) {
+            document.getElementById('classSelect').value = cKey;
+            document.getElementById('groupSelect').value = gId;
+            document.getElementById('overviewDialog').close();
+            onFilterChange();
+        }
+
+        function copyFullSchoolReport() {
+            const groups = getAllGroups();
+            let lines = [`📊 OMON SCHOOL GURLAN FILIALI — UMUMIY O'ZLASHTIRISH HISOBOTI (${formatDateUz(getTodayISO())})\n`];
+            let count = 0;
+            for (const [cKey, cName] of Object.entries(CLASS_NAMES)) {
+                const topics = curriculaData[cKey] || [];
+                for (const g of groups) {
+                    if (!localStorage.getItem(`omon_full_${cKey}_${g.id}`)) continue;
+                    const gData = getGroupData(cKey, g.id);
+                    let doneCount = 0;
+                    topics.forEach((_, idx) => { if (gData.items[idx]?.done) doneCount++; });
+                    if (doneCount > 0) {
+                        count++;
+                        const pct = Math.round((doneCount / topics.length) * 100);
+                        lines.push(`${count}. ${cName} [${g.name}]: ${doneCount}/${topics.length} (${pct}%)`);
+                    }
+                }
+            }
+            if (count === 0) lines.push("Hozircha belgilangan guruhlar yo'q.");
+            navigator.clipboard.writeText(lines.join('\n')).then(() => {
+                showToast("📋 Umumiy hisobot nusxalandi!");
+            });
+        }
+
+        function exportCSV() {
+            const classKey = document.getElementById('classSelect').value;
+            const groupKey = document.getElementById('groupSelect').value;
+            const groupName = getAllGroups().find(g => g.id === groupKey)?.name || groupKey;
+            const topics = curriculaData[classKey] || curriculaData['it_1'];
+            const groupData = getGroupData(classKey, groupKey);
+
+            const rows = [
+                ["Hafta", "Oy", "Mavzu", "Holati", "Sana", "Izoh"]
+            ];
+
+            topics.forEach((t, idx) => {
+                const mIdx = Math.floor(idx / 4) + 1;
+                const item = groupData.items[idx] || {};
+                const title = (item.customTitle || t).replace(/"/g, '""');
+                const status = item.done ? "O'tildi" : "O'tilmagan";
+                const date = item.date ? formatDateUz(item.date) : "";
+                const note = (item.note || "").replace(/"/g, '""');
+                rows.push([idx + 1, MONTHS[mIdx].name, `"${title}"`, status, date, `"${note}"`]);
+            });
+
+            const csvContent = "\uFEFF" + rows.map(r => r.join(";")).join("\r\n");
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `OmonSchool_${classKey}_${groupName}_${getTodayISO()}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("📥 Excel (CSV) fayl yuklab olindi!");
+        }
+
+        function collectAllStorageSnapshot() {
+            const snapshot = {
+                version: 2,
+                updatedAt: Date.now(),
+                customGroups: getAllGroups().filter(g => String(g.id).startsWith('custom_')),
+                records: {}
+            };
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (k && k.startsWith('omon_full_')) {
+                    try {
+                        snapshot.records[k] = JSON.parse(localStorage.getItem(k));
+                    } catch (e) {}
+                }
+            }
+            return snapshot;
+        }
+
+        function mergeSnapshotIntoLocal(remoteSnapshot) {
+            if (!remoteSnapshot || typeof remoteSnapshot !== 'object') return false;
+            let changed = false;
+
+            if (Array.isArray(remoteSnapshot.customGroups)) {
+                const localCustom = getAllGroups().filter(g => String(g.id).startsWith('custom_'));
+                const mergedMap = new Map();
+                localCustom.forEach(g => mergedMap.set(g.id, g));
+                remoteSnapshot.customGroups.forEach(g => {
+                    if (g && g.id && g.name && !mergedMap.has(g.id)) {
+                        mergedMap.set(g.id, g);
+                        changed = true;
+                    }
+                });
+                if (changed) {
+                    localStorage.setItem(CUSTOM_GROUPS_KEY, JSON.stringify(Array.from(mergedMap.values())));
+                    populateGroupsSelect();
+                }
+            }
+
+            if (remoteSnapshot.records && typeof remoteSnapshot.records === 'object') {
+                for (const [key, remoteVal] of Object.entries(remoteSnapshot.records)) {
+                    if (!key.startsWith('omon_full_') || !remoteVal) continue;
+                    let localVal = null;
+                    try {
+                        localVal = JSON.parse(localStorage.getItem(key));
+                    } catch (e) {}
+
+                    const remoteTime = Number(remoteVal._updatedAt || 0);
+                    const localTime = Number(localVal?._updatedAt || 0);
+
+                    if (!localVal || remoteTime > localTime) {
+                        localStorage.setItem(key, JSON.stringify(remoteVal));
+                        changed = true;
+                    }
+                }
+            }
+            return changed;
+        }
+
+        function exportBackupJSON() {
+            const data = collectAllStorageSnapshot();
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `OmonSchool_Backup_${getTodayISO()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("💾 Zaxira nusxa (JSON) yuklab olindi!");
+        }
+
+        function importBackupJSON(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    mergeSnapshotIntoLocal(parsed);
+                    renderMonthTabs();
+                    renderTopics();
+                    scheduleCloudPush();
+                    showToast("✅ Zaxira nusxa muvaffaqiyatli tiklandi!");
+                } catch (err) {
+                    alert("Xatolik: JSON fayl formati noto'g'ri.");
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // ============================================================================
+        // 6. GITHUB CLOUD SYNC (Kompyuter <-> Telefon Real-Time Sinxronlash)
+        // ============================================================================
+        function getCloudConfig() {
+            try {
+                const cfg = JSON.parse(localStorage.getItem(CLOUD_META_KEY)) || {};
+                return {
+                    repo: cfg.repo || 'KurolbayevSherzod/dars-reja-kundalik',
+                    token: cfg.token || ''
+                };
+            } catch (e) {
+                return { repo: 'KurolbayevSherzod/dars-reja-kundalik', token: '' };
+            }
+        }
+
+        function updateSyncStatusUI(state, text) {
+            const iconEl = document.getElementById('syncStatusIcon');
+            const textEl = document.getElementById('syncStatusText');
+            const btn = document.getElementById('syncStatusBtn');
+            if (state === 'ok') {
+                iconEl.textContent = '☁️✅';
+                textEl.textContent = text || 'Sinxronlangan';
+                btn.className = "inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 transition shadow-sm";
+            } else if (state === 'loading') {
+                iconEl.textContent = '⏳';
+                textEl.textContent = text || 'Saqlanmoqda...';
+            } else if (state === 'error') {
+                iconEl.textContent = '⚠️';
+                textEl.textContent = text || 'Xatolik';
+            } else {
+                iconEl.textContent = '☁️';
+                textEl.textContent = text || 'Sinxronlash';
+                btn.className = "inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-xl border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition shadow-sm";
+            }
+        }
+
+        function openSyncDialog() {
+            const cfg = getCloudConfig();
+            document.getElementById('ghRepoInput').value = cfg.repo;
+            document.getElementById('ghTokenInput').value = cfg.token;
+            const connectedBox = document.getElementById('syncConnectedBox');
+            if (cfg.token) {
+                connectedBox.classList.remove('hidden');
+            } else {
+                connectedBox.classList.add('hidden');
+            }
+            document.getElementById('qrCodeWrapper').classList.add('hidden');
+            document.getElementById('syncDialog').showModal();
+        }
+
+        async function saveSyncSettings(e) {
+            e.preventDefault();
+            const repo = document.getElementById('ghRepoInput').value.trim();
+            const token = document.getElementById('ghTokenInput').value.trim();
+            localStorage.setItem(CLOUD_META_KEY, JSON.stringify({ repo, token }));
+            await syncNow(true);
+            openSyncDialog();
+        }
+
+        function disconnectSync() {
+            if (confirm("Sinxronlash kalitini shu qurilmadan o'chirasizmi? (Mahalliy ma'lumotlar saqlanib qoladi)")) {
+                const cfg = getCloudConfig();
+                localStorage.setItem(CLOUD_META_KEY, JSON.stringify({ repo: cfg.repo, token: '' }));
+                updateSyncStatusUI('idle', 'Sinxronlash');
+                document.getElementById('syncConnectedBox').classList.add('hidden');
+                document.getElementById('ghTokenInput').value = '';
+                showToast("Kalit o'chirildi");
+            }
+        }
+
+        function getPhoneSyncUrl() {
+            const cfg = getCloudConfig();
+            const baseUrl = `https://kurolbayevsherzod.github.io/dars-reja-kundalik/`;
+            const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ r: cfg.repo, t: cfg.token }))));
+            return `${baseUrl}#sync=${payload}`;
+        }
+
+        function copyPhoneSyncLink() {
+            const url = getPhoneSyncUrl();
+            navigator.clipboard.writeText(url).then(() => {
+                showToast("📲 Telefonga ulash havolasi nusxalandi! Telegram'dan telefonga yuboring.");
+            });
+        }
+
+        function toggleQrCode() {
+            const wrap = document.getElementById('qrCodeWrapper');
+            const img = document.getElementById('qrCodeImg');
+            if (wrap.classList.contains('hidden')) {
+                const syncUrl = getPhoneSyncUrl();
+                img.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(syncUrl)}`;
+                wrap.classList.remove('hidden');
+                wrap.classList.add('flex');
+            } else {
+                wrap.classList.add('hidden');
+                wrap.classList.remove('flex');
+            }
+        }
+
+        async function syncNow(showNotification = false) {
+            if (isSyncing) return;
+            const cfg = getCloudConfig();
+            if (!cfg.repo) return;
+
+            isSyncing = true;
+            updateSyncStatusUI('loading', 'Sinxronlanmoqda...');
+
+            try {
+                const apiUrl = `https://api.github.com/repos/${cfg.repo}/contents/data/progress.json`;
+                const headers = { 'Accept': 'application/vnd.github+json' };
+                if (cfg.token) headers['Authorization'] = `Bearer ${cfg.token}`;
+
+                let sha = null;
+                let remoteData = null;
+
+                const getResp = await fetch(apiUrl + `?t=${Date.now()}`, { headers, cache: 'no-store' });
+                if (getResp.ok) {
+                    const fileJson = await getResp.json();
+                    sha = fileJson.sha;
+                    if (fileJson.content) {
+                        const decoded = decodeURIComponent(escape(atob(fileJson.content.replace(/\s/g, ''))));
+                        remoteData = JSON.parse(decoded);
+                    }
+                }
+
+                if (remoteData) {
+                    const merged = mergeSnapshotIntoLocal(remoteData);
+                    if (merged) {
+                        renderMonthTabs();
+                        renderTopics();
+                    }
+                }
+
+                // If token is configured, push merged snapshot back to GitHub
+                if (cfg.token) {
+                    const snapshot = collectAllStorageSnapshot();
+                    const contentB64 = btoa(unescape(encodeURIComponent(JSON.stringify(snapshot, null, 2))));
+                    const body = {
+                        message: `Sync kundalik progress (${new Date().toISOString()})`,
+                        content: contentB64
+                    };
+                    if (sha) body.sha = sha;
+
+                    const putResp = await fetch(apiUrl, {
+                        method: 'PUT',
+                        headers: {
+                            ...headers,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(body)
+                    });
+
+                    if (!putResp.ok) {
+                        throw new Error('GitHub write error: ' + putResp.status);
+                    }
+                    updateSyncStatusUI('ok', 'Bulutda saqlandi');
+                    if (showNotification) showToast("☁️ Kompyuter va Telefon ma'lumotlari sinxronlandi!");
+                } else {
+                    updateSyncStatusUI('idle', 'Sinxronlash');
+                }
+            } catch (err) {
+                console.warn('Cloud sync warning:', err);
+                updateSyncStatusUI(cfg.token ? 'error' : 'idle', cfg.token ? 'Oflayn (Mahalliy)' : 'Sinxronlash');
+            } finally {
+                isSyncing = false;
+            }
+        }
+
+        function scheduleCloudPush() {
+            const cfg = getCloudConfig();
+            if (!cfg.token) return;
+            clearTimeout(syncTimer);
+            updateSyncStatusUI('loading', 'Saqlanmoqda...');
+            syncTimer = setTimeout(() => {
+                syncNow(false);
+            }, 1200);
+        }
+
+        // Check URL hash for 1-click phone setup (#sync=...)
+        function checkHashSyncSetup() {
+            if (location.hash && location.hash.startsWith('#sync=')) {
+                try {
+                    const rawB64 = location.hash.slice(6);
+                    const parsed = JSON.parse(decodeURIComponent(escape(atob(rawB64))));
+                    if (parsed.r && parsed.t) {
+                        localStorage.setItem(CLOUD_META_KEY, JSON.stringify({ repo: parsed.r, token: parsed.t }));
+                        history.replaceState(null, '', location.pathname + location.search);
+                        showToast("🎉 Telefon bulutli sinxronlashga muvaffaqiyatli ulandi!", 4500);
+                    }
+                } catch (e) {
+                    console.error("Invalid sync hash", e);
+                }
+            }
+        }
+
+        // ============================================================================
+        // 7. DIALOG FALLBACK & PWA SERVICE WORKER
+        // ============================================================================
+        function setupDialogLightDismissFallbacks() {
+            if (!('closedBy' in HTMLDialogElement.prototype)) {
+                document.querySelectorAll('dialog').forEach((dialog) => {
+                    dialog.addEventListener('click', (event) => {
+                        if (event.target !== dialog) return;
+                        const rect = dialog.getBoundingClientRect();
+                        const isDialogContent = (
+                            rect.top <= event.clientY &&
+                            event.clientY <= rect.top + rect.height &&
+                            rect.left <= event.clientX &&
+                            event.clientX <= rect.left + rect.width
+                        );
+                        if (isDialogContent) return;
+                        dialog.close();
+                    });
+                });
+            }
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPwaPrompt = e;
+            const btn = document.getElementById('installPwaBtn');
+            btn.classList.remove('hidden');
+            btn.classList.add('inline-flex');
+        });
+
+        async function installPWA() {
+            if (!deferredPwaPrompt) return;
+            deferredPwaPrompt.prompt();
+            await deferredPwaPrompt.userChoice;
+            deferredPwaPrompt = null;
+            document.getElementById('installPwaBtn').classList.add('hidden');
+        }
+
+        if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            });
+        }
+
+        // ============================================================================
+        // 8. INITIALIZATION
+        // ============================================================================
+        function initApp() {
+            checkHashSyncSetup();
+            populateGroupsSelect();
+
+            // Restore last selected class & group
+            try {
+                const last = JSON.parse(localStorage.getItem(LAST_SELECTION_KEY));
+                if (last?.classKey && curriculaData[last.classKey]) {
+                    document.getElementById('classSelect').value = last.classKey;
+                }
+                if (last?.groupKey && getAllGroups().some(g => g.id === last.groupKey)) {
+                    document.getElementById('groupSelect').value = last.groupKey;
+                }
+            } catch (e) {}
+
+            setupDialogLightDismissFallbacks();
+            renderMonthTabs();
+            renderTopics();
+
+            // Sync with GitHub Cloud on startup
+            syncNow(false);
+        }
+
+        initApp();
+    </script>
+</body>
+</html>
