@@ -203,8 +203,8 @@
                 <button type="button" onclick="copyTelegramReport()" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition shadow-sm" title="Telegram uchun hisobot nusxalash">
                     📋 Hisobot
                 </button>
-                <button type="button" id="installPwaBtn" onclick="installPWA()" class="hidden items-center gap-1.5 text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-sm">
-                    📲 O'rnatish
+                <button type="button" id="installPwaBtn" onclick="openPhoneInstallDialog()" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold px-3.5 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-sm">
+                    📲 Telefonga o'rnatish
                 </button>
             </div>
         </header>
@@ -469,6 +469,60 @@
                     <button type="submit" class="px-5 py-2 rounded-xl text-sm font-bold bg-blue-700 text-white hover:bg-blue-800 shadow-sm">Qo'shish</button>
                 </div>
             </form>
+        </div>
+    </dialog>
+
+    <!-- DIALOG 5: Telefonga yuklash va o'rnatish -->
+    <dialog id="phoneInstallDialog" closedby="any" aria-labelledby="phoneInstallTitle">
+        <div class="p-5 sm:p-6">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+                <h3 id="phoneInstallTitle" class="text-base sm:text-lg font-extrabold text-slate-800">📲 Telefonga yuklash va ilova qilib o'rnatish</h3>
+                <button type="button" onclick="document.getElementById('phoneInstallDialog').close()" class="text-slate-400 hover:text-slate-700 font-bold text-lg px-2">✕</button>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Native 1-click install button if browser supports it -->
+                <div id="nativeInstallBanner" class="hidden p-4 rounded-xl bg-indigo-50 border-2 border-indigo-300 text-center space-y-2.5">
+                    <p class="text-xs sm:text-sm font-bold text-indigo-950">✨ Qurilmangiz ilovani 1-bosishda o'rnatishga tayyor!</p>
+                    <button type="button" onclick="triggerNativeInstall()" class="w-full py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-sm shadow-md transition">
+                        📲 Hoziroq ilova sifatida o'rnatish
+                    </button>
+                </div>
+
+                <!-- QR code box for scanning from PC to Phone -->
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col items-center text-center">
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-blue-700 bg-blue-100 px-2.5 py-1 rounded-md mb-2">1-usul: Telefon kamerasi bilan skanerlang</span>
+                    <img id="installQrImg" alt="Telefonga yuklash QR kodi" width="200" height="200" class="rounded-xl border border-slate-200 bg-white p-2 shadow-sm" style="aspect-ratio: 1 / 1;">
+                    <p class="text-xs text-slate-500 mt-2 max-w-xs">Telefon kamerasini yoki QR-skanerni shu rasmga tutsangiz, dastur telefoningizda kompyuter bilan sinxron ulangan holda ochiladi.</p>
+                </div>
+
+                <!-- Direct buttons: Telegram share, Copy Link, Download HTML -->
+                <div class="space-y-2">
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-slate-600 block">2-usul: Havola yoki fayl sifatida telefonga yuborish</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <button type="button" onclick="sendLinkToTelegram()" class="py-2.5 px-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs sm:text-sm shadow-sm transition flex items-center justify-center gap-1.5">
+                            ✈️ Telegram'ga yuborish
+                        </button>
+                        <button type="button" onclick="copyPhoneSyncLink()" class="py-2.5 px-3 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs sm:text-sm shadow-sm transition flex items-center justify-center gap-1.5">
+                            🔗 Maxsus havolani nusxalash
+                        </button>
+                    </div>
+                    <button type="button" onclick="downloadStandaloneHtml()" class="w-full py-2.5 px-3 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs sm:text-sm transition flex items-center justify-center gap-1.5">
+                        📥 Oflayn dastur faylini (.html) yuklab olish
+                    </button>
+                </div>
+
+                <!-- Step by step guide once opened on phone -->
+                <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-950 space-y-1.5">
+                    <p class="font-extrabold">📌 Telefonda ochilgach, ekranga ilova qilib qo'shish:</p>
+                    <p>• <strong>Android (Chrome):</strong> Yuqori o'ng burchakdagi <strong>⋮ (3 nuqta)</strong> → <strong>«Ilovani o'rnatish» (Установить приложение)</strong> tugmasini bosing.</p>
+                    <p>• <strong>iPhone (Safari):</strong> Pastdagi <strong>Ulashish [↑]</strong> → <strong>«Asosiy ekranga» (На экран «Домой»)</strong> tugmasini bosing.</p>
+                </div>
+
+                <div class="flex justify-end pt-2 border-t border-slate-100">
+                    <button type="button" onclick="document.getElementById('phoneInstallDialog').close()" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-slate-100">Yopish</button>
+                </div>
+            </div>
         </div>
     </dialog>
 
@@ -1877,17 +1931,55 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPwaPrompt = e;
-            const btn = document.getElementById('installPwaBtn');
-            btn.classList.remove('hidden');
-            btn.classList.add('inline-flex');
+            const banner = document.getElementById('nativeInstallBanner');
+            if (banner) banner.classList.remove('hidden');
         });
 
-        async function installPWA() {
-            if (!deferredPwaPrompt) return;
+        function openPhoneInstallDialog() {
+            const qrImg = document.getElementById('installQrImg');
+            const cfg = getCloudConfig();
+            const targetUrl = cfg.token ? getPhoneSyncUrl() : 'https://kurolbayevsherzod.github.io/dars-reja-kundalik/';
+            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data=${encodeURIComponent(targetUrl)}`;
+
+            const banner = document.getElementById('nativeInstallBanner');
+            if (deferredPwaPrompt) {
+                banner.classList.remove('hidden');
+            } else {
+                banner.classList.add('hidden');
+            }
+            document.getElementById('phoneInstallDialog').showModal();
+        }
+
+        async function triggerNativeInstall() {
+            if (!deferredPwaPrompt) {
+                showToast("Brauzer menyusidan «Asosiy ekranga qo'shish» bandini tanlang");
+                return;
+            }
             deferredPwaPrompt.prompt();
             await deferredPwaPrompt.userChoice;
             deferredPwaPrompt = null;
-            document.getElementById('installPwaBtn').classList.add('hidden');
+            document.getElementById('nativeInstallBanner').classList.add('hidden');
+            document.getElementById('phoneInstallDialog').close();
+        }
+
+        function sendLinkToTelegram() {
+            const cfg = getCloudConfig();
+            const targetUrl = cfg.token ? getPhoneSyncUrl() : 'https://kurolbayevsherzod.github.io/dars-reja-kundalik/';
+            const text = "📚 Omon School — IT va AI Dars Reja & Kundalik (Kompyuter va Telefon uchun sinxron ilova):";
+            const tgUrl = `https://t.me/share/url?url=${encodeURIComponent(targetUrl)}&text=${encodeURIComponent(text)}`;
+            window.open(tgUrl, '_blank');
+        }
+
+        function downloadStandaloneHtml() {
+            const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Dars_reja_kundalik.html';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("📥 Dastur fayli (.html) yuklab olindi!");
         }
 
         if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
