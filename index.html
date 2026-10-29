@@ -160,6 +160,101 @@
             scrollbar-width: none;
         }
 
+        /* Responsive Table for Quarterly Grade Calculator (modern-web-guidance: responsive-table) */
+        .table-wrapper {
+            overflow: auto;
+            max-inline-size: 100%;
+            max-block-size: min(500px, 80dvh);
+            container-type: inline-size;
+        }
+
+        .table-wrapper table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+        }
+
+        .table-wrapper thead {
+            position: sticky;
+            inset-block-start: 0;
+            z-index: 1;
+        }
+
+        .table-wrapper tbody th {
+            position: sticky;
+            inset-inline-start: 0;
+            background: white;
+        }
+
+        @container (width < 600px) {
+            .table-wrapper table,
+            .table-wrapper thead,
+            .table-wrapper tbody,
+            .table-wrapper tr,
+            .table-wrapper th,
+            .table-wrapper td {
+                display: block;
+            }
+
+            .table-wrapper thead {
+                display: none;
+            }
+
+            .table-wrapper tr {
+                margin-block-end: 1rem;
+                border: 1px solid #cbd5e1;
+                border-radius: 0.75rem;
+                overflow: hidden;
+                background: white;
+            }
+
+            .table-wrapper tbody th {
+                position: sticky;
+                inset-block-start: 0;
+                z-index: 2;
+                background: #f1f5f9;
+            }
+
+            .table-wrapper table {
+                --label-1: "O'quvchi";
+                --label-2: "Baholar";
+                --label-3: "O'rtacha baho";
+                --label-4: "Foiz ko'rsatkichi";
+                --label-5: "Choraklik baho";
+                --label-6: "Amal";
+            }
+
+            .table-wrapper td:nth-child(2)::before {
+                content: var(--label-2) ": ";
+                font-weight: 700;
+                color: #475569;
+            }
+
+            .table-wrapper td:nth-child(3)::before {
+                content: var(--label-3) ": ";
+                font-weight: 700;
+                color: #475569;
+            }
+
+            .table-wrapper td:nth-child(4)::before {
+                content: var(--label-4) ": ";
+                font-weight: 700;
+                color: #475569;
+            }
+
+            .table-wrapper td:nth-child(5)::before {
+                content: var(--label-5) ": ";
+                font-weight: 700;
+                color: #475569;
+            }
+
+            .table-wrapper td:nth-child(6)::before {
+                content: var(--label-6) ": ";
+                font-weight: 700;
+                color: #475569;
+            }
+        }
+
         @media print {
             .no-print {
                 display: none !important;
@@ -193,6 +288,9 @@
 
             <!-- Top Action Toolbar -->
             <div class="flex flex-wrap items-center gap-2 no-print">
+                <button type="button" onclick="switchAppMode('calculator')" id="topCalcQuickBtn" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold px-3.5 py-2 rounded-xl border border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 transition shadow-sm">
+                    🧮 Choraklik Kalkulyator
+                </button>
                 <button type="button" onclick="openSyncDialog()" id="syncStatusBtn" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-xl border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition shadow-sm">
                     <span id="syncStatusIcon">☁️</span>
                     <span id="syncStatusText">Sinxronlash</span>
@@ -210,7 +308,7 @@
         </header>
 
         <!-- Class & Group Selectors -->
-        <section aria-label="Sinf va guruh tanlash" class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-5">
+        <section aria-label="Sinf va guruh tanlash" class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-4">
             <div class="md:col-span-7">
                 <label for="classSelect" class="block text-xs sm:text-sm font-bold mb-1.5 text-slate-700">📚 Sinf / Yo'nalishni tanlang:</label>
                 <select id="classSelect" class="w-full border-2 border-slate-200 rounded-xl p-3 bg-slate-50 font-semibold text-slate-800 focus:border-blue-600 focus:bg-white outline-none transition text-sm sm:text-base" onchange="onFilterChange()">
@@ -239,74 +337,285 @@
             </div>
         </section>
 
-        <!-- Progress & Next Topic Dashboard -->
-        <section aria-label="O'zlashtirish ko'rsatkichi" class="bg-gradient-to-br from-blue-50 via-indigo-50/70 to-slate-50 border border-blue-200/80 rounded-2xl p-4 sm:p-5 mb-5 shadow-sm">
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                <div class="flex-1">
-                    <div class="flex flex-wrap items-center gap-2 mb-1">
-                        <span class="text-xs uppercase tracking-wider text-blue-700 font-bold">O'zlashtirish ko'rsatkichi</span>
-                        <span id="percentBadge" class="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-blue-700 text-white">0%</span>
-                        <span id="lastUpdatedBadge" class="text-xs text-slate-500 font-medium hidden"></span>
-                    </div>
-                    <div class="flex items-baseline gap-3">
-                        <h2 id="progressText" class="fluid-stat font-extrabold text-blue-950">0 / 40</h2>
-                        <span id="remainingText" class="text-xs sm:text-sm font-semibold text-slate-600">40 ta mavzu qoldi</span>
-                    </div>
-                    <div class="mt-3 w-full">
-                        <progress id="progressBar" value="0" max="40" class="w-full h-3 rounded-full overflow-hidden">0%</progress>
-                    </div>
-                </div>
+        <!-- Main Mode Switcher: Dars Reja vs Choraklik Baho Kalkulyatori -->
+        <nav aria-label="Asosiy bo'limlar" class="grid grid-cols-2 gap-2 p-1.5 bg-slate-100 border border-slate-200 rounded-2xl mb-5 no-print">
+            <button type="button" id="modeBtn_curriculum" onclick="switchAppMode('curriculum')" class="py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 bg-blue-700 text-white shadow-sm transition">
+                <span>📅 Dars Reja va Kundalik</span>
+            </button>
+            <button type="button" id="modeBtn_calculator" onclick="switchAppMode('calculator')" class="py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 text-slate-700 hover:bg-white/80 transition">
+                <span>🧮 Choraklik Baho Kalkulyatori</span>
+            </button>
+        </nav>
 
-                <!-- Next Topic Quick Card -->
-                <div id="nextTopicBox" class="lg:w-96 bg-white/90 border border-blue-200 rounded-xl p-3.5 shadow-sm flex flex-col justify-between gap-2.5">
-                    <div>
-                        <div class="flex items-center justify-between gap-2">
-                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md">🎯 Navbatdagi dars</span>
-                            <span id="nextTopicMonth" class="text-[11px] font-bold text-slate-500">1-Oy: Sentabr</span>
+        <!-- ====================================================================== -->
+        <!-- VIEW 1: DARS REJA VA KUNDALIK                                          -->
+        <!-- ====================================================================== -->
+        <div id="curriculumView">
+            <!-- Progress & Next Topic Dashboard -->
+            <section aria-label="O'zlashtirish ko'rsatkichi" class="bg-gradient-to-br from-blue-50 via-indigo-50/70 to-slate-50 border border-blue-200/80 rounded-2xl p-4 sm:p-5 mb-5 shadow-sm">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <div class="flex-1">
+                        <div class="flex flex-wrap items-center gap-2 mb-1">
+                            <span class="text-xs uppercase tracking-wider text-blue-700 font-bold">O'zlashtirish ko'rsatkichi</span>
+                            <span id="percentBadge" class="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-blue-700 text-white">0%</span>
+                            <span id="lastUpdatedBadge" class="text-xs text-slate-500 font-medium hidden"></span>
                         </div>
-                        <p id="nextTopicTitle" class="text-sm font-bold text-slate-800 mt-1.5 line-clamp-2">1. Kompyuter nima? — Asosiy tushunchalar</p>
+                        <div class="flex items-baseline gap-3">
+                            <h2 id="progressText" class="fluid-stat font-extrabold text-blue-950">0 / 40</h2>
+                            <span id="remainingText" class="text-xs sm:text-sm font-semibold text-slate-600">40 ta mavzu qoldi</span>
+                        </div>
+                        <div class="mt-3 w-full">
+                            <progress id="progressBar" value="0" max="40" class="w-full h-3 rounded-full overflow-hidden">0%</progress>
+                        </div>
                     </div>
-                    <button type="button" id="markNextBtn" onclick="markNextTopicCompleted()" class="no-print w-full bg-blue-700 hover:bg-blue-800 active:bg-blue-900 text-white font-bold text-xs sm:text-sm py-2 px-3 rounded-lg transition shadow-sm flex items-center justify-center gap-1.5">
-                        ✅ Shu dars o'tildi deb belgilash
+
+                    <!-- Next Topic Quick Card -->
+                    <div id="nextTopicBox" class="lg:w-96 bg-white/90 border border-blue-200 rounded-xl p-3.5 shadow-sm flex flex-col justify-between gap-2.5">
+                        <div>
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md">🎯 Navbatdagi dars</span>
+                                <span id="nextTopicMonth" class="text-[11px] font-bold text-slate-500">1-Oy: Sentabr</span>
+                            </div>
+                            <p id="nextTopicTitle" class="text-sm font-bold text-slate-800 mt-1.5 line-clamp-2">1. Kompyuter nima? — Asosiy tushunchalar</p>
+                        </div>
+                        <button type="button" id="markNextBtn" onclick="markNextTopicCompleted()" class="no-print w-full bg-blue-700 hover:bg-blue-800 active:bg-blue-900 text-white font-bold text-xs sm:text-sm py-2 px-3 rounded-lg transition shadow-sm flex items-center justify-center gap-1.5">
+                            ✅ Shu dars o'tildi deb belgilash
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Search, Month Tabs, and Status Filter -->
+            <section aria-label="Qidiruv va filtrlar" class="space-y-3 mb-5 no-print">
+                <!-- Month horizontal tabs -->
+                <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1" id="monthTabs" role="tablist" aria-label="Oylar bo'yicha filtr">
+                    <!-- Dynamically generated -->
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+                    <div class="sm:col-span-6 relative">
+                        <input type="search" id="searchInput" oninput="renderTopics()" placeholder="🔎 Mavzu nomi yoki izoh bo'yicha qidirish..." class="w-full border-2 border-slate-200 rounded-xl pl-3.5 pr-8 py-2 text-sm font-medium text-slate-800 focus:border-blue-600 outline-none transition bg-slate-50 focus:bg-white">
+                        <button type="button" id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-sm font-bold">✕</button>
+                    </div>
+                    <div class="sm:col-span-4 flex rounded-xl bg-slate-100 p-1 border border-slate-200">
+                        <button type="button" onclick="setStatusFilter('all')" id="filter_all" class="flex-1 text-xs font-bold py-1.5 rounded-lg bg-white text-blue-700 shadow-sm transition">Barchasi</button>
+                        <button type="button" onclick="setStatusFilter('pending')" id="filter_pending" class="flex-1 text-xs font-bold py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition">O'tilmagan</button>
+                        <button type="button" onclick="setStatusFilter('done')" id="filter_done" class="flex-1 text-xs font-bold py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition">O'tilgan</button>
+                    </div>
+                    <div class="sm:col-span-2 flex gap-1.5">
+                        <button type="button" onclick="exportCSV()" class="flex-1 text-xs font-bold py-2 px-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition" title="Excel (CSV) yuklab olish">
+                            📥 Excel
+                        </button>
+                        <button type="button" onclick="resetProgress()" class="flex-1 text-xs font-bold py-2 px-2.5 rounded-xl border border-red-200 bg-white text-red-600 hover:bg-red-50 transition" title="Shu guruh belgilarini tozalash">
+                            🗑️ Tozalash
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Topics List -->
+            <main class="topics-container">
+                <div id="topicsList" class="space-y-2.5">
+                    <!-- Dynamically rendered -->
+                </div>
+            </main>
+        </div>
+
+        <!-- ====================================================================== -->
+        <!-- VIEW 2: CHORAKLIK BAHO KALKULYATORI (O'RTACHA BAHO VA FOIZ %)          -->
+        <!-- ====================================================================== -->
+        <section id="calculatorView" aria-label="Choraklik baho kalkulyatori" class="hidden space-y-6">
+            <div class="bg-gradient-to-br from-amber-50/90 via-blue-50/60 to-slate-50 border border-amber-200/90 rounded-2xl p-4 sm:p-6 shadow-sm space-y-5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-amber-200/70 pb-3.5">
+                    <div>
+                        <h2 class="text-base sm:text-lg font-extrabold text-slate-800 flex items-center gap-2">
+                            <span>🧮 Choraklik Baho va Foiz Kalkulyatori</span>
+                        </h2>
+                        <p class="text-xs sm:text-sm text-slate-600">Baholarni tugmalar orqali bosing yoki katakka yozing — o'rtacha baho, choraklik natija va foiz ko'rsatkichi (%) darhol hisoblanadi.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <label for="calcQuarterSelect" class="sr-only">Chorakni tanlang</label>
+                        <select id="calcQuarterSelect" onchange="onCalcFilterChange()" class="border-2 border-amber-300 bg-white rounded-xl px-3 py-2 text-xs sm:text-sm font-bold text-slate-800 outline-none focus:border-blue-600">
+                            <option value="q1">1-Chorak</option>
+                            <option value="q2">2-Chorak</option>
+                            <option value="q3">3-Chorak</option>
+                            <option value="q4">4-Chorak</option>
+                            <option value="year">Yillik yakuniy</option>
+                        </select>
+                        <label for="calcScaleSelect" class="sr-only">Baholash tizimi</label>
+                        <select id="calcScaleSelect" onchange="onCalcScaleChange()" class="border-2 border-slate-200 bg-white rounded-xl px-3 py-2 text-xs sm:text-sm font-bold text-slate-700 outline-none focus:border-blue-600">
+                            <option value="5">5 ballik tizim (1–5)</option>
+                            <option value="100">100 ballik tizim (0–100)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Quick Tap Grade Buttons (for 5-point system) -->
+                <div id="quickGradeButtonsBox" class="space-y-2">
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-slate-600 block">⚡ 1-bosishda baho qo'shish:</span>
+                    <div class="grid grid-cols-5 sm:grid-cols-7 gap-2">
+                        <button type="button" onclick="appendQuickGrade(5)" class="py-3 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold text-base sm:text-lg shadow-sm transition flex flex-col items-center justify-center">
+                            <span>5</span>
+                            <span class="text-[10px] font-semibold opacity-90">A'lo (100%)</span>
+                        </button>
+                        <button type="button" onclick="appendQuickGrade(4)" class="py-3 px-2 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-extrabold text-base sm:text-lg shadow-sm transition flex flex-col items-center justify-center">
+                            <span>4</span>
+                            <span class="text-[10px] font-semibold opacity-90">Yaxshi (80%)</span>
+                        </button>
+                        <button type="button" onclick="appendQuickGrade(3)" class="py-3 px-2 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-95 text-white font-extrabold text-base sm:text-lg shadow-sm transition flex flex-col items-center justify-center">
+                            <span>3</span>
+                            <span class="text-[10px] font-semibold opacity-90">Qoniqarli (60%)</span>
+                        </button>
+                        <button type="button" onclick="appendQuickGrade(2)" class="py-3 px-2 rounded-xl bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-extrabold text-base sm:text-lg shadow-sm transition flex flex-col items-center justify-center">
+                            <span>2</span>
+                            <span class="text-[10px] font-semibold opacity-90">Past (40%)</span>
+                        </button>
+                        <button type="button" onclick="appendQuickGrade(1)" class="py-3 px-2 rounded-xl bg-slate-600 hover:bg-slate-700 active:scale-95 text-white font-extrabold text-base sm:text-lg shadow-sm transition flex flex-col items-center justify-center">
+                            <span>1</span>
+                            <span class="text-[10px] font-semibold opacity-90">1 ball (20%)</span>
+                        </button>
+                        <button type="button" onclick="removeLastGrade()" class="col-span-2 sm:col-span-1 py-3 px-2 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 active:scale-95 text-slate-700 font-bold text-xs sm:text-sm transition flex flex-col items-center justify-center">
+                            <span>⌫ O'chirish</span>
+                            <span class="text-[10px] text-slate-500">Oxirgisini</span>
+                        </button>
+                        <button type="button" onclick="clearCalcInput()" class="col-span-3 sm:col-span-1 py-3 px-2 rounded-xl border-2 border-rose-200 bg-rose-50 hover:bg-rose-100 active:scale-95 text-rose-700 font-bold text-xs sm:text-sm transition flex flex-col items-center justify-center">
+                            <span>🗑️ Tozalash</span>
+                            <span class="text-[10px] text-rose-500">Barchasini</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Input field for typing or pasting grades -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label for="calcGradesInput" class="block text-xs sm:text-sm font-bold text-slate-700">✍️ Baholarni kiriting (yoki jurnaldan nusxalab tashlang):</label>
+                        <span id="calcCountLabel" class="text-xs font-extrabold text-blue-700 bg-blue-100 px-2.5 py-0.5 rounded-full">0 ta baho</span>
+                    </div>
+                    <input type="text" id="calcGradesInput" oninput="onCalcInputTyped()" placeholder="Masalan: 5 4 5 5 3 4  yoki  5, 4, 5, 3  yoki  545534" class="w-full border-2 border-slate-300 rounded-xl p-3.5 text-base sm:text-lg font-extrabold text-slate-900 bg-white focus:border-blue-600 outline-none transition shadow-inner tracking-wide">
+                    <!-- Entered grade chips -->
+                    <div id="calcChipsContainer" class="flex flex-wrap items-center gap-1.5 pt-1 min-h-[2rem]">
+                        <span class="text-xs text-slate-400 italic">Hali baholar kiritilmadi. Yuqoridagi tugmalarni bosing yoki raqamlarni yozing...</span>
+                    </div>
+                </div>
+
+                <!-- REAL-TIME RESULTS DASHBOARD (O'rtacha baho, Foiz %, Choraklik baho) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-1">
+                    <!-- Card 1: O'rtacha baho -->
+                    <div class="bg-white border-2 border-blue-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-blue-700">📊 O'rtacha baho (Aniq)</span>
+                            <span id="calcSumBadge" class="text-xs font-bold text-slate-500">Yig'indi: 0</span>
+                        </div>
+                        <div class="my-2 flex items-baseline gap-2">
+                            <span id="calcAvgValue" class="fluid-stat font-extrabold text-blue-950">0.00</span>
+                            <span id="calcMaxScaleLabel" class="text-xs font-bold text-slate-400">/ 5.00</span>
+                        </div>
+                        <p id="calcFormulaText" class="text-xs text-slate-500 font-medium">Baholar kiritilishi bilan o'rtacha qiymat hisoblanadi</p>
+                    </div>
+
+                    <!-- Card 2: Foiz ko'rsatkichi (%) -->
+                    <div class="bg-white border-2 border-emerald-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-700">📈 Foiz ko'rsatkichi (%)</span>
+                            <span id="calcQualityBadge" class="text-xs font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Sifat: 0%</span>
+                        </div>
+                        <div class="my-2 flex items-baseline gap-2">
+                            <span id="calcPercentValue" class="fluid-stat font-extrabold text-emerald-700">0%</span>
+                            <span class="text-xs font-semibold text-slate-500">o'zlashtirish</span>
+                        </div>
+                        <div class="w-full space-y-1">
+                            <progress id="calcPercentBar" value="0" max="100" class="w-full h-2.5 rounded-full overflow-hidden">0%</progress>
+                            <p id="calcPercentDetail" class="text-[11px] text-slate-500 font-medium">Maksimal ballga nisbatan foiz ko'rsatkichi</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Choraklik yakuniy baho -->
+                    <div class="bg-white border-2 border-amber-300 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-amber-800">🏆 Choraklik baho</span>
+                            <span id="calcQuarterVerdict" class="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600">—</span>
+                        </div>
+                        <div class="my-2 flex items-baseline gap-2.5">
+                            <span id="calcFinalGradeValue" class="fluid-stat font-extrabold text-slate-900">—</span>
+                            <span id="calcRoundingRule" class="text-xs font-semibold text-slate-500">(>=4.5 → 5; >=3.5 → 4)</span>
+                        </div>
+                        <p id="calcNextTargetHint" class="text-xs font-bold text-amber-800 bg-amber-50 border border-amber-200/80 rounded-lg px-2.5 py-1">Baholarni kiriting</p>
+                    </div>
+                </div>
+
+                <!-- Grade Distribution Breakdown (5s, 4s, 3s, 2s count & %) -->
+                <div id="calcBreakdownBox" class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+                    <div class="bg-emerald-50/80 border border-emerald-200 rounded-xl px-3 py-2 flex items-center justify-between">
+                        <span class="text-xs font-extrabold text-emerald-900">«5» (A'lo):</span>
+                        <span id="dist5Text" class="text-xs font-extrabold text-emerald-700">0 ta (0%)</span>
+                    </div>
+                    <div class="bg-blue-50/80 border border-blue-200 rounded-xl px-3 py-2 flex items-center justify-between">
+                        <span class="text-xs font-extrabold text-blue-900">«4» (Yaxshi):</span>
+                        <span id="dist4Text" class="text-xs font-extrabold text-blue-700">0 ta (0%)</span>
+                    </div>
+                    <div class="bg-amber-50/80 border border-amber-200 rounded-xl px-3 py-2 flex items-center justify-between">
+                        <span class="text-xs font-extrabold text-amber-900">«3» (Qoniqarli):</span>
+                        <span id="dist3Text" class="text-xs font-extrabold text-amber-700">0 ta (0%)</span>
+                    </div>
+                    <div class="bg-rose-50/80 border border-rose-200 rounded-xl px-3 py-2 flex items-center justify-between">
+                        <span class="text-xs font-extrabold text-rose-900">«2» va «1»:</span>
+                        <span id="dist2Text" class="text-xs font-extrabold text-rose-700">0 ta (0%)</span>
+                    </div>
+                </div>
+
+                <!-- Add to Class Quarterly Table Form -->
+                <form onsubmit="saveStudentGradeRow(event)" class="pt-3 border-t border-amber-200/80 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+                    <div class="flex-1">
+                        <label for="calcStudentName" class="sr-only">O'quvchi F.I.Sh. (ixtiyoriy)</label>
+                        <input type="text" id="calcStudentName" placeholder="👤 O'quvchi F.I.Sh. (ixtiyoriy — guruh jadvaliga saqlash uchun)" class="w-full border-2 border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-slate-800 bg-white focus:border-blue-600 outline-none">
+                    </div>
+                    <button type="submit" class="py-2.5 px-5 rounded-xl bg-blue-700 hover:bg-blue-800 active:scale-95 text-white font-extrabold text-xs sm:text-sm shadow-sm transition shrink-0">
+                        ➕ Sinf choraklik jadvaliga qo'shish
                     </button>
+                </form>
+            </div>
+
+            <!-- Saved Class/Group Quarterly Grades Table -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h3 id="calcTableTitle" class="text-sm sm:text-base font-extrabold text-slate-800">📋 Sinf / Guruh choraklik baholar jadvali</h3>
+                        <p id="calcClassSummaryText" class="text-xs font-semibold text-slate-500 mt-0.5">O'quvchilar soni: 0 ta • Sinf o'rtacha bali: 0.00 (0%) • Sifat ko'rsatkichi: 0%</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 no-print">
+                        <button type="button" onclick="copyCalcTableTelegram()" class="text-xs font-bold px-3 py-2 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition">
+                            📋 Telegram uchun nusxalash
+                        </button>
+                        <button type="button" onclick="exportCalcTableCSV()" class="text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 transition">
+                            📥 Excel (CSV)
+                        </button>
+                        <button type="button" onclick="clearClassGradeTable()" class="text-xs font-bold px-3 py-2 rounded-xl border border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 transition">
+                            🗑️ Jadvalni tozalash
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Responsive Table Wrapper (modern-web-guidance: responsive-table) -->
+                <div tabindex="0" role="region" aria-labelledby="calc-table-caption" class="table-wrapper rounded-xl border border-slate-200">
+                    <table class="text-left text-xs sm:text-sm">
+                        <caption id="calc-table-caption" class="sr-only">Tanlangan sinf va guruh o'quvchilarining choraklik o'rtacha baholari va foiz ko'rsatkichlari jadvali</caption>
+                        <thead class="bg-slate-100 text-slate-700 font-extrabold border-b border-slate-200">
+                            <tr>
+                                <th class="p-3">O'quvchi</th>
+                                <th class="p-3">Baholar</th>
+                                <th class="p-3">O'rtacha baho</th>
+                                <th class="p-3">Foiz ko'rsatkichi</th>
+                                <th class="p-3">Choraklik baho</th>
+                                <th class="p-3 text-right no-print">Amal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="calcTableBody" class="divide-y divide-slate-200">
+                            <!-- Dynamically populated -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
-
-        <!-- Search, Month Tabs, and Status Filter -->
-        <section aria-label="Qidiruv va filtrlar" class="space-y-3 mb-5 no-print">
-            <!-- Month horizontal tabs -->
-            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1" id="monthTabs" role="tablist" aria-label="Oylar bo'yicha filtr">
-                <!-- Dynamically generated -->
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
-                <div class="sm:col-span-6 relative">
-                    <input type="search" id="searchInput" oninput="renderTopics()" placeholder="🔎 Mavzu nomi yoki izoh bo'yicha qidirish..." class="w-full border-2 border-slate-200 rounded-xl pl-3.5 pr-8 py-2 text-sm font-medium text-slate-800 focus:border-blue-600 outline-none transition bg-slate-50 focus:bg-white">
-                    <button type="button" id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-sm font-bold">✕</button>
-                </div>
-                <div class="sm:col-span-4 flex rounded-xl bg-slate-100 p-1 border border-slate-200">
-                    <button type="button" onclick="setStatusFilter('all')" id="filter_all" class="flex-1 text-xs font-bold py-1.5 rounded-lg bg-white text-blue-700 shadow-sm transition">Barchasi</button>
-                    <button type="button" onclick="setStatusFilter('pending')" id="filter_pending" class="flex-1 text-xs font-bold py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition">O'tilmagan</button>
-                    <button type="button" onclick="setStatusFilter('done')" id="filter_done" class="flex-1 text-xs font-bold py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition">O'tilgan</button>
-                </div>
-                <div class="sm:col-span-2 flex gap-1.5">
-                    <button type="button" onclick="exportCSV()" class="flex-1 text-xs font-bold py-2 px-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition" title="Excel (CSV) yuklab olish">
-                        📥 Excel
-                    </button>
-                    <button type="button" onclick="resetProgress()" class="flex-1 text-xs font-bold py-2 px-2.5 rounded-xl border border-red-200 bg-white text-red-600 hover:bg-red-50 transition" title="Shu guruh belgilarini tozalash">
-                        🗑️ Tozalash
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Topics List -->
-        <main class="topics-container">
-            <div id="topicsList" class="space-y-2.5">
-                <!-- Dynamically rendered -->
-            </div>
-        </main>
 
         <!-- Footer -->
         <footer class="mt-8 pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-2 no-print">
@@ -325,14 +634,17 @@
     <!-- Sticky Mobile Bottom Bar -->
     <div class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur border-t border-slate-200 p-2.5 px-4 flex items-center justify-between md:hidden z-30 shadow-lg no-print">
         <div>
-            <span id="mobileBarClass" class="text-[11px] font-bold text-slate-500 block truncate max-w-[180px]">1-Sinflar (IT)</span>
+            <span id="mobileBarClass" class="text-[11px] font-bold text-slate-500 block truncate max-w-[160px]">1-Sinflar (IT)</span>
             <span id="mobileBarProgress" class="text-sm font-extrabold text-blue-900">0 / 40 (0%)</span>
         </div>
-        <div class="flex items-center gap-2">
-            <button type="button" onclick="markNextTopicCompleted()" class="bg-blue-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-sm active:scale-95 transition">
+        <div class="flex items-center gap-1.5">
+            <button type="button" onclick="switchAppMode('calculator')" id="mobileCalcToggleBtn" class="bg-amber-500 text-white text-xs font-extrabold px-3 py-2 rounded-xl shadow-sm active:scale-95 transition">
+                🧮 Baho %
+            </button>
+            <button type="button" onclick="markNextTopicCompleted()" class="bg-blue-700 text-white text-xs font-bold px-3 py-2 rounded-xl shadow-sm active:scale-95 transition">
                 ✅ Keyingi dars
             </button>
-            <button type="button" onclick="openSyncDialog()" class="bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold px-3 py-2 rounded-xl">
+            <button type="button" onclick="openSyncDialog()" class="bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold px-2.5 py-2 rounded-xl">
                 ☁️
             </button>
         </div>
@@ -1220,6 +1532,9 @@
             localStorage.setItem(LAST_SELECTION_KEY, JSON.stringify({ classKey, groupKey }));
             renderMonthTabs();
             renderTopics();
+            if (typeof renderCalcTable === 'function') {
+                renderCalcTable();
+            }
         }
 
         function renderTopics() {
@@ -1841,6 +2156,7 @@
                     if (merged) {
                         renderMonthTabs();
                         renderTopics();
+                        if (typeof renderCalcTable === 'function') renderCalcTable();
                     }
                 }
 
@@ -1989,7 +2305,601 @@
         }
 
         // ============================================================================
-        // 8. INITIALIZATION
+        // 8. CHORAKLIK BAHO VA FOIZ KALKULYATORI (O'RTACHA BAHO & %)
+        // ============================================================================
+        let currentAppMode = 'curriculum';
+        let currentCalcGrades = [];
+        let editingStudentId = null;
+
+        const QUARTER_NAMES = {
+            q1: "1-Chorak",
+            q2: "2-Chorak",
+            q3: "3-Chorak",
+            q4: "4-Chorak",
+            year: "Yillik yakuniy"
+        };
+
+        function switchAppMode(targetMode) {
+            if (targetMode === 'toggle') {
+                currentAppMode = currentAppMode === 'curriculum' ? 'calculator' : 'curriculum';
+            } else {
+                currentAppMode = targetMode;
+            }
+
+            const currView = document.getElementById('curriculumView');
+            const calcView = document.getElementById('calculatorView');
+            const btnCurr = document.getElementById('modeBtn_curriculum');
+            const btnCalc = document.getElementById('modeBtn_calculator');
+            const topQuickBtn = document.getElementById('topCalcQuickBtn');
+            const mobileToggleBtn = document.getElementById('mobileCalcToggleBtn');
+
+            if (currentAppMode === 'calculator') {
+                currView.classList.add('hidden');
+                calcView.classList.remove('hidden');
+                btnCalc.className = "py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 bg-blue-700 text-white shadow-sm transition";
+                btnCurr.className = "py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 text-slate-700 hover:bg-white/80 transition";
+                if (topQuickBtn) {
+                    topQuickBtn.innerHTML = "📅 Dars Rejaga qaytish";
+                    topQuickBtn.onclick = () => switchAppMode('curriculum');
+                }
+                if (mobileToggleBtn) {
+                    mobileToggleBtn.innerHTML = "📅 Reja";
+                    mobileToggleBtn.onclick = () => switchAppMode('curriculum');
+                }
+                renderCalcResults();
+                renderCalcTable();
+            } else {
+                calcView.classList.add('hidden');
+                currView.classList.remove('hidden');
+                btnCurr.className = "py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 bg-blue-700 text-white shadow-sm transition";
+                btnCalc.className = "py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 text-slate-700 hover:bg-white/80 transition";
+                if (topQuickBtn) {
+                    topQuickBtn.innerHTML = "🧮 Choraklik Kalkulyator";
+                    topQuickBtn.onclick = () => switchAppMode('calculator');
+                }
+                if (mobileToggleBtn) {
+                    mobileToggleBtn.innerHTML = "🧮 Baho %";
+                    mobileToggleBtn.onclick = () => switchAppMode('calculator');
+                }
+            }
+        }
+
+        function getCalcScale() {
+            return Number(document.getElementById('calcScaleSelect')?.value || 5);
+        }
+
+        function parseGradesFromText(rawText, scale) {
+            const cleaned = String(rawText || '').trim().replace(/,/g, '.');
+            if (!cleaned) return [];
+
+            // Split by whitespace, semicolon, slash, or hyphen
+            const tokens = rawText.trim().split(/[\s;/|]+/);
+            const grades = [];
+
+            for (let tok of tokens) {
+                if (!tok) continue;
+                // Handle comma-separated lists like "5,4,5,3"
+                const subTokens = tok.split(',');
+                for (let sub of subTokens) {
+                    const s = sub.trim();
+                    if (!s) continue;
+                    if (scale === 5 && /^[1-5]{2,}$/.test(s)) {
+                        // Continuous digits in 5-point mode e.g. "545534" -> [5,4,5,5,3,4]
+                        for (const ch of s) {
+                            grades.push(Number(ch));
+                        }
+                    } else {
+                        const num = Number(s.replace(',', '.'));
+                        if (!isNaN(num) && num >= 0 && num <= scale) {
+                            grades.push(num);
+                        }
+                    }
+                }
+            }
+            return grades;
+        }
+
+        function syncInputFromGradesArray() {
+            const inp = document.getElementById('calcGradesInput');
+            inp.value = currentCalcGrades.join(' ');
+            renderCalcResults();
+        }
+
+        function appendQuickGrade(grade) {
+            currentCalcGrades.push(Number(grade));
+            syncInputFromGradesArray();
+        }
+
+        function removeLastGrade() {
+            if (currentCalcGrades.length > 0) {
+                currentCalcGrades.pop();
+                syncInputFromGradesArray();
+            }
+        }
+
+        function removeGradeAtIndex(idx) {
+            if (idx >= 0 && idx < currentCalcGrades.length) {
+                currentCalcGrades.splice(idx, 1);
+                syncInputFromGradesArray();
+            }
+        }
+
+        function clearCalcInput() {
+            currentCalcGrades = [];
+            editingStudentId = null;
+            document.getElementById('calcGradesInput').value = '';
+            document.getElementById('calcStudentName').value = '';
+            renderCalcResults();
+        }
+
+        function onCalcInputTyped() {
+            const raw = document.getElementById('calcGradesInput').value;
+            currentCalcGrades = parseGradesFromText(raw, getCalcScale());
+            renderCalcResults();
+        }
+
+        function onCalcScaleChange() {
+            const scale = getCalcScale();
+            const quickBox = document.getElementById('quickGradeButtonsBox');
+            const distBox = document.getElementById('calcBreakdownBox');
+            const inp = document.getElementById('calcGradesInput');
+
+            if (scale === 5) {
+                quickBox.classList.remove('hidden');
+                distBox.classList.remove('hidden');
+                inp.placeholder = "Masalan: 5 4 5 5 3 4  yoki  5, 4, 5, 3  yoki  545534";
+            } else {
+                quickBox.classList.add('hidden');
+                distBox.classList.add('hidden');
+                inp.placeholder = "100 ballik baholarni probel yoki vergul bilan kiriting: masalan 85 92 78 90";
+            }
+            currentCalcGrades = parseGradesFromText(inp.value, scale);
+            renderCalcResults();
+        }
+
+        function onCalcFilterChange() {
+            renderCalcTable();
+        }
+
+        function calculateMetrics(grades, scale) {
+            const count = grades.length;
+            if (count === 0) {
+                return {
+                    count: 0,
+                    sum: 0,
+                    avg: 0,
+                    percent: 0,
+                    qualityPercent: 0,
+                    finalGrade: '—',
+                    verdict: '—',
+                    verdictClass: 'bg-slate-100 text-slate-600',
+                    hint: 'Baholarni kiriting',
+                    c5: 0, c4: 0, c3: 0, c2: 0
+                };
+            }
+
+            const sum = grades.reduce((acc, g) => acc + g, 0);
+            const avg = sum / count;
+            const percent = (avg / scale) * 100;
+
+            let finalGrade = '—';
+            let verdict = '';
+            let verdictClass = '';
+            let hint = '';
+            let c5 = 0, c4 = 0, c3 = 0, c2 = 0;
+
+            if (scale === 5) {
+                grades.forEach(g => {
+                    if (g >= 4.5) c5++;
+                    else if (g >= 3.5) c4++;
+                    else if (g >= 2.5) c3++;
+                    else c2++;
+                });
+                const qualityPercent = ((c5 + c4) / count) * 100;
+
+                if (avg >= 4.5) {
+                    finalGrade = '5';
+                    verdict = "A'lo (5)";
+                    verdictClass = 'bg-emerald-100 text-emerald-800';
+                    hint = "🎉 Choraklik «5» (A'lo) baho chiqadi!";
+                } else if (avg >= 3.5) {
+                    finalGrade = '4';
+                    verdict = "Yaxshi (4)";
+                    verdictClass = 'bg-blue-100 text-blue-800';
+                    const need5 = Math.ceil((4.5 * count - sum) / 0.5);
+                    hint = `💡 Choraklik «5» chiqishi uchun yana ${need5} ta «5» baho kerak`;
+                } else if (avg >= 2.5) {
+                    finalGrade = '3';
+                    verdict = "Qoniqarli (3)";
+                    verdictClass = 'bg-amber-100 text-amber-800';
+                    const needFor4 = Math.ceil((3.5 * count - sum) / 1.5);
+                    hint = `💡 Choraklik «4» ga ko'tarish uchun kamida ${needFor4} ta «5» kerak`;
+                } else {
+                    finalGrade = '2';
+                    verdict = "Qoniqarsiz (2)";
+                    verdictClass = 'bg-rose-100 text-rose-800';
+                    const needFor3 = Math.ceil((2.5 * count - sum) / 2.5);
+                    hint = `⚠️ Choraklik «3» ga chiqish uchun kamida ${needFor3} ta «5» kerak`;
+                }
+
+                return {
+                    count,
+                    sum,
+                    avg,
+                    percent,
+                    qualityPercent,
+                    finalGrade,
+                    verdict,
+                    verdictClass,
+                    hint,
+                    c5, c4, c3, c2
+                };
+            } else {
+                // 100-point scale
+                const qualityCount = grades.filter(g => g >= 71).length;
+                const qualityPercent = (qualityCount / count) * 100;
+
+                if (avg >= 86) {
+                    finalGrade = '5 (A\'lo)';
+                    verdict = "86–100%";
+                    verdictClass = 'bg-emerald-100 text-emerald-800';
+                    hint = "🎉 A'lo ko'rsatkich (86% va undan yuqori)!";
+                } else if (avg >= 71) {
+                    finalGrade = '4 (Yaxshi)';
+                    verdict = "71–85%";
+                    verdictClass = 'bg-blue-100 text-blue-800';
+                    hint = `O'rtacha ball: ${avg.toFixed(1)} / 100`;
+                } else if (avg >= 56) {
+                    finalGrade = '3 (Qoniqarli)';
+                    verdict = "56–70%";
+                    verdictClass = 'bg-amber-100 text-amber-800';
+                    hint = `O'rtacha ball: ${avg.toFixed(1)} / 100`;
+                } else {
+                    finalGrade = '2 (Past)';
+                    verdict = "0–55%";
+                    verdictClass = 'bg-rose-100 text-rose-800';
+                    hint = `O'rtacha ball: ${avg.toFixed(1)} / 100`;
+                }
+
+                return {
+                    count,
+                    sum,
+                    avg,
+                    percent,
+                    qualityPercent,
+                    finalGrade,
+                    verdict,
+                    verdictClass,
+                    hint,
+                    c5: 0, c4: 0, c3: 0, c2: 0
+                };
+            }
+        }
+
+        function renderCalcResults() {
+            const scale = getCalcScale();
+            const m = calculateMetrics(currentCalcGrades, scale);
+
+            document.getElementById('calcCountLabel').textContent = `${m.count} ta baho`;
+            document.getElementById('calcSumBadge').textContent = `Yig'indi: ${Number.isInteger(m.sum) ? m.sum : m.sum.toFixed(1)}`;
+            document.getElementById('calcAvgValue').textContent = m.count > 0 ? m.avg.toFixed(2) : '0.00';
+            document.getElementById('calcMaxScaleLabel').textContent = `/ ${scale}`;
+            document.getElementById('calcFormulaText').textContent = m.count > 0
+                ? `${Number.isInteger(m.sum) ? m.sum : m.sum.toFixed(1)} ÷ ${m.count} ta baho = ${m.avg.toFixed(2)}`
+                : "Baholar kiritilishi bilan o'rtacha qiymat hisoblanadi";
+
+            const pctFormatted = m.count > 0 ? `${m.percent.toFixed(1).replace(/\.0$/, '')}%` : '0%';
+            const qualFormatted = m.count > 0 ? `${Math.round(m.qualityPercent)}%` : '0%';
+            document.getElementById('calcPercentValue').textContent = pctFormatted;
+            document.getElementById('calcQualityBadge').textContent = `Sifat: ${qualFormatted}`;
+            const pctBar = document.getElementById('calcPercentBar');
+            pctBar.value = Math.min(100, Math.max(0, m.percent));
+            document.getElementById('calcPercentDetail').textContent = m.count > 0
+                ? `O'zlashtirish: ${pctFormatted} • Sifat («4» va «5» ulushi): ${qualFormatted}`
+                : "Maksimal ballga nisbatan foiz ko'rsatkichi";
+
+            document.getElementById('calcFinalGradeValue').textContent = m.finalGrade;
+            const verdictEl = document.getElementById('calcQuarterVerdict');
+            verdictEl.textContent = m.verdict;
+            verdictEl.className = `text-xs font-extrabold px-2.5 py-0.5 rounded-full ${m.verdictClass}`;
+            document.getElementById('calcRoundingRule').textContent = scale === 5
+                ? '(>=4.5 → 5; >=3.5 → 4; >=2.5 → 3)'
+                : '(>=86 → 5; >=71 → 4; >=56 → 3)';
+            document.getElementById('calcNextTargetHint').textContent = m.hint;
+
+            if (scale === 5) {
+                const p5 = m.count > 0 ? Math.round((m.c5 / m.count) * 100) : 0;
+                const p4 = m.count > 0 ? Math.round((m.c4 / m.count) * 100) : 0;
+                const p3 = m.count > 0 ? Math.round((m.c3 / m.count) * 100) : 0;
+                const p2 = m.count > 0 ? Math.round((m.c2 / m.count) * 100) : 0;
+                document.getElementById('dist5Text').textContent = `${m.c5} ta (${p5}%)`;
+                document.getElementById('dist4Text').textContent = `${m.c4} ta (${p4}%)`;
+                document.getElementById('dist3Text').textContent = `${m.c3} ta (${p3}%)`;
+                document.getElementById('dist2Text').textContent = `${m.c2} ta (${p2}%)`;
+            }
+
+            // Render interactive chips
+            const chipsBox = document.getElementById('calcChipsContainer');
+            if (currentCalcGrades.length === 0) {
+                chipsBox.innerHTML = `<span class="text-xs text-slate-400 italic">Hali baholar kiritilmadi. Yuqoridagi tugmalarni bosing yoki raqamlarni yozing...</span>`;
+            } else {
+                chipsBox.innerHTML = currentCalcGrades.map((g, idx) => {
+                    let chipColor = 'bg-slate-100 text-slate-800 border-slate-300';
+                    if (scale === 5) {
+                        if (g >= 4.5) chipColor = 'bg-emerald-100 text-emerald-900 border-emerald-300';
+                        else if (g >= 3.5) chipColor = 'bg-blue-100 text-blue-900 border-blue-300';
+                        else if (g >= 2.5) chipColor = 'bg-amber-100 text-amber-900 border-amber-300';
+                        else chipColor = 'bg-rose-100 text-rose-900 border-rose-300';
+                    }
+                    return `
+                        <button type="button" onclick="removeGradeAtIndex(${idx})" title="Bosib shu bahoni o'chirish"
+                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs sm:text-sm font-extrabold ${chipColor} hover:opacity-75 transition">
+                            <span>${g}</span>
+                            <span class="text-[10px] opacity-60">✕</span>
+                        </button>
+                    `;
+                }).join('');
+            }
+        }
+
+        function getCalcTableStorageKey() {
+            const classKey = document.getElementById('classSelect').value;
+            const groupKey = document.getElementById('groupSelect').value;
+            const quarter = document.getElementById('calcQuarterSelect').value;
+            return `omon_full_grades_${classKey}_${groupKey}_${quarter}`;
+        }
+
+        function getSavedStudentRows() {
+            const key = getCalcTableStorageKey();
+            try {
+                const parsed = JSON.parse(localStorage.getItem(key));
+                if (parsed && Array.isArray(parsed.students)) {
+                    return parsed.students;
+                }
+            } catch (e) {}
+            return [];
+        }
+
+        function saveStudentRowsToStorage(students) {
+            const key = getCalcTableStorageKey();
+            localStorage.setItem(key, JSON.stringify({
+                _updatedAt: Date.now(),
+                students
+            }));
+            scheduleCloudPush();
+        }
+
+        function saveStudentGradeRow(event) {
+            event.preventDefault();
+            const scale = getCalcScale();
+            if (currentCalcGrades.length === 0) {
+                showToast("⚠️ Avval kamida bitta baho kiriting!");
+                return;
+            }
+
+            const students = getSavedStudentRows();
+            const nameInput = document.getElementById('calcStudentName').value.trim();
+            const studentName = nameInput || `${students.length + 1}-o'quvchi`;
+            const metrics = calculateMetrics(currentCalcGrades, scale);
+
+            const record = {
+                id: editingStudentId || ('st_' + Date.now()),
+                name: studentName,
+                grades: [...currentCalcGrades],
+                scale,
+                avg: Number(metrics.avg.toFixed(2)),
+                percent: Number(metrics.percent.toFixed(1)),
+                finalGrade: metrics.finalGrade
+            };
+
+            if (editingStudentId) {
+                const idx = students.findIndex(s => s.id === editingStudentId);
+                if (idx !== -1) students[idx] = record;
+                else students.push(record);
+                editingStudentId = null;
+            } else {
+                students.push(record);
+            }
+
+            saveStudentRowsToStorage(students);
+            clearCalcInput();
+            renderCalcTable();
+            showToast(`✅ "${studentName}" choraklik jadvalga saqlandi!`);
+        }
+
+        function loadStudentRowForEdit(studentId) {
+            const students = getSavedStudentRows();
+            const found = students.find(s => s.id === studentId);
+            if (!found) return;
+            editingStudentId = found.id;
+            document.getElementById('calcScaleSelect').value = String(found.scale || 5);
+            onCalcScaleChange();
+            currentCalcGrades = [...(found.grades || [])];
+            document.getElementById('calcStudentName').value = found.name || '';
+            syncInputFromGradesArray();
+            showToast(`✏️ "${found.name}" baholari tahrirlash uchun yuklandi`);
+        }
+
+        function deleteStudentRow(studentId) {
+            const students = getSavedStudentRows().filter(s => s.id !== studentId);
+            saveStudentRowsToStorage(students);
+            renderCalcTable();
+            showToast("🗑️ O'quvchi qatori o'chirildi");
+        }
+
+        function clearClassGradeTable() {
+            const students = getSavedStudentRows();
+            if (students.length === 0) return;
+            if (confirm("Shu guruh va chorakdagi barcha o'quvchilar baholar jadvalini tozalaysizmi?")) {
+                saveStudentRowsToStorage([]);
+                renderCalcTable();
+                showToast("🗑️ Choraklik jadval tozalandi");
+            }
+        }
+
+        function renderCalcTable() {
+            const classKey = document.getElementById('classSelect').value;
+            const groupKey = document.getElementById('groupSelect').value;
+            const quarterKey = document.getElementById('calcQuarterSelect').value;
+            const groupName = getAllGroups().find(g => g.id === groupKey)?.name || groupKey;
+            const quarterName = QUARTER_NAMES[quarterKey] || quarterKey;
+
+            document.getElementById('calcTableTitle').textContent = `📋 ${groupName} • ${quarterName} baholar jadvali (${CLASS_NAMES[classKey].split('(')[0].trim()})`;
+
+            const students = getSavedStudentRows();
+            const tbody = document.getElementById('calcTableBody');
+            const summaryEl = document.getElementById('calcClassSummaryText');
+
+            if (students.length === 0) {
+                summaryEl.textContent = "O'quvchilar soni: 0 ta • Yuqorida baholarni hisoblab, «➕ Sinf choraklik jadvaliga qo'shish» tugmasini bosing.";
+                tbody.innerHTML = `
+                    <tr>
+                        <th class="p-3 text-slate-400 font-semibold">—</th>
+                        <td class="p-3 text-slate-400 italic" colspan="5">Jadvalda hali o'quvchilar yo'q. Baholarni kiritib jadvalga qo'shishingiz mumkin.</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let totalAvgSum = 0;
+            let totalPctSum = 0;
+            let goodOrExcellentCount = 0;
+
+            students.forEach(s => {
+                totalAvgSum += Number(s.avg || 0);
+                totalPctSum += Number(s.percent || 0);
+                const fg = String(s.finalGrade);
+                if (fg.startsWith('5') || fg.startsWith('4')) {
+                    goodOrExcellentCount++;
+                }
+            });
+
+            const classAvg = (totalAvgSum / students.length).toFixed(2);
+            const classPct = (totalPctSum / students.length).toFixed(1).replace(/\.0$/, '');
+            const classQuality = Math.round((goodOrExcellentCount / students.length) * 100);
+
+            summaryEl.textContent = `O'quvchilar: ${students.length} ta • Sinf o'rtacha bahosi: ${classAvg} • O'rtacha foiz: ${classPct}% • Sifat ko'rsatkichi («4» va «5»): ${classQuality}%`;
+
+            tbody.innerHTML = students.map((s, idx) => {
+                const fg = String(s.finalGrade);
+                let badgeClass = 'bg-slate-100 text-slate-800';
+                if (fg.startsWith('5')) badgeClass = 'bg-emerald-100 text-emerald-800 border border-emerald-300';
+                else if (fg.startsWith('4')) badgeClass = 'bg-blue-100 text-blue-800 border border-blue-300';
+                else if (fg.startsWith('3')) badgeClass = 'bg-amber-100 text-amber-800 border border-amber-300';
+                else if (fg.startsWith('2')) badgeClass = 'bg-rose-100 text-rose-800 border border-rose-300';
+
+                return `
+                    <tr class="hover:bg-slate-50/80 transition">
+                        <th class="p-3 font-bold text-slate-800">${idx + 1}. ${escapeHtml(s.name)}</th>
+                        <td class="p-3 font-semibold text-slate-700">${escapeHtml((s.grades || []).join(', '))} <span class="text-xs text-slate-400">(${(s.grades || []).length} ta)</span></td>
+                        <td class="p-3 font-extrabold text-blue-900">${Number(s.avg).toFixed(2)}</td>
+                        <td class="p-3 font-extrabold text-emerald-700">${Number(s.percent).toFixed(1).replace(/\.0$/, '')}%</td>
+                        <td class="p-3"><span class="inline-block px-2.5 py-0.5 rounded-lg font-extrabold text-xs sm:text-sm ${badgeClass}">${escapeHtml(fg)}</span></td>
+                        <td class="p-3 text-right no-print space-x-1">
+                            <button type="button" onclick="loadStudentRowForEdit('${s.id}')" class="text-xs font-bold px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100">✏️ Tahrirlash</button>
+                            <button type="button" onclick="deleteStudentRow('${s.id}')" class="text-xs font-bold px-2.5 py-1 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function copyCalcTableTelegram() {
+            const classKey = document.getElementById('classSelect').value;
+            const groupKey = document.getElementById('groupSelect').value;
+            const quarterKey = document.getElementById('calcQuarterSelect').value;
+            const groupName = getAllGroups().find(g => g.id === groupKey)?.name || groupKey;
+            const quarterName = QUARTER_NAMES[quarterKey] || quarterKey;
+            const students = getSavedStudentRows();
+
+            if (students.length === 0 && currentCalcGrades.length > 0) {
+                const scale = getCalcScale();
+                const m = calculateMetrics(currentCalcGrades, scale);
+                const msg = [
+                    `🧮 OMON SCHOOL — CHORAKLIK BAHO HISOBOTI`,
+                    `👥 Guruh: ${groupName} (${quarterName})`,
+                    `✍️ Baholar (${m.count} ta): ${currentCalcGrades.join(', ')}`,
+                    `📊 O'rtacha baho: ${m.avg.toFixed(2)} / ${scale}`,
+                    `📈 Foiz ko'rsatkichi: ${m.percent.toFixed(1)}%`,
+                    `🏆 Choraklik baho: ${m.finalGrade}`
+                ].join('\n');
+                navigator.clipboard.writeText(msg).then(() => showToast("📋 Hisoblangan natija nusxalandi!"));
+                return;
+            }
+
+            if (students.length === 0) {
+                showToast("⚠️ Nusxalash uchun baho kiriting yoki jadvalga o'quvchi qo'shing!");
+                return;
+            }
+
+            let totalAvgSum = 0;
+            let totalPctSum = 0;
+            let goodCount = 0;
+            const lines = [
+                `📊 OMON SCHOOL GURLAN FILIALI — CHORAKLIK BAHOLAR`,
+                `📚 Yo'nalish: ${CLASS_NAMES[classKey]}`,
+                `👥 Guruh / Sinf: ${groupName} (${quarterName})`,
+                `────────────────────`
+            ];
+
+            students.forEach((s, idx) => {
+                totalAvgSum += Number(s.avg || 0);
+                totalPctSum += Number(s.percent || 0);
+                if (String(s.finalGrade).startsWith('5') || String(s.finalGrade).startsWith('4')) goodCount++;
+                lines.push(`${idx + 1}. ${s.name} — O'rtacha: ${Number(s.avg).toFixed(2)} (${Number(s.percent).toFixed(1)}%) → Choraklik: ${s.finalGrade}`);
+            });
+
+            lines.push(`────────────────────`);
+            lines.push(`📈 Sinf o'rtacha bahosi: ${(totalAvgSum / students.length).toFixed(2)} (${(totalPctSum / students.length).toFixed(1)}%)`);
+            lines.push(`🏆 Sifat ko'rsatkichi («4» va «5»): ${Math.round((goodCount / students.length) * 100)}%`);
+
+            navigator.clipboard.writeText(lines.join('\n')).then(() => {
+                showToast("📋 Choraklik jadval hisoboti Telegram uchun nusxalandi!");
+            });
+        }
+
+        function exportCalcTableCSV() {
+            const classKey = document.getElementById('classSelect').value;
+            const groupKey = document.getElementById('groupSelect').value;
+            const quarterKey = document.getElementById('calcQuarterSelect').value;
+            const groupName = getAllGroups().find(g => g.id === groupKey)?.name || groupKey;
+            const students = getSavedStudentRows();
+
+            if (students.length === 0) {
+                showToast("⚠️ Jadvalda eksport qilish uchun o'quvchilar yo'q!");
+                return;
+            }
+
+            const rows = [
+                ["#", "O'quvchi F.I.Sh.", "Baholar", "Baholar soni", "O'rtacha baho", "Foiz ko'rsatkichi (%)", "Choraklik baho"]
+            ];
+            students.forEach((s, i) => {
+                const name = String(s.name || '').replace(/"/g, '""');
+                const gradesStr = (s.grades || []).join(', ');
+                rows.push([
+                    i + 1,
+                    `"${name}"`,
+                    `"${gradesStr}"`,
+                    (s.grades || []).length,
+                    Number(s.avg).toFixed(2),
+                    `${Number(s.percent).toFixed(1)}%`,
+                    `"${s.finalGrade}"`
+                ]);
+            });
+
+            const csvContent = "\uFEFF" + rows.map(r => r.join(";")).join("\r\n");
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `Choraklik_Baholar_${groupName}_${quarterKey}_${getTodayISO()}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("📥 Choraklik baholar Excel (CSV) fayli yuklab olindi!");
+        }
+
+        // ============================================================================
+        // 9. INITIALIZATION
         // ============================================================================
         function initApp() {
             checkHashSyncSetup();
@@ -2009,6 +2919,8 @@
             setupDialogLightDismissFallbacks();
             renderMonthTabs();
             renderTopics();
+            renderCalcResults();
+            renderCalcTable();
 
             // Sync with GitHub Cloud on startup
             syncNow(false);
