@@ -1,4 +1,4 @@
-const CACHE_NAME = 'omon-kundalik-v2';
+const CACHE_NAME = 'omon-kundalik-v3';
 const ASSETS = [
   './',
   './index.html',
